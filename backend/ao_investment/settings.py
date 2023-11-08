@@ -81,8 +81,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'ao_investment', 
-        'USER': 'postgres', 
-        'PASSWORD': 'Liverpool12',
+        'USER': 'alex', 
+        'PASSWORD': 'password',
         'HOST': 'localhost'
         
     }
@@ -148,5 +148,7 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_ALLOW_ALL = True 
 
 FILE_UPLOAD_PERMISSIONS=0o640 
+
+AUTH_USER_MODEL = 'accounts.UserAccount'
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
