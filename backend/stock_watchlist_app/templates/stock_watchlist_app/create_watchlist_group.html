@@ -1,0 +1,6 @@
+<!-- create_watchlist_group.html -->
+<form method="post" action="{% url 'create_watchlist_group' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Watchlist Group</button>
+</form>

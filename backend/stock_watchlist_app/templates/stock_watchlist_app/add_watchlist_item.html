@@ -1,0 +1,6 @@
+<!-- add_watchlist_item.html -->
+<form method="post" action="{% url 'add_watchlist_item' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Watchlist Item</button>
+</form>

@@ -19,19 +19,27 @@ class WatchListItem(models.Model):
     quantity = models.IntegerField(null=False)
     price = models.FloatField(null=False)
     sector = models.CharField(max_length=100, null=False)
-    trade_date = models.DateTimeField(default=default_date)
-    created_timestamp = models.DateTimeField(default=datetime.utcnow)
-    comments = models.CharField(max_length=140, null=True)
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=False)
-    group = models.ForeignKey('WatchlistGroup', on_delete=models.CASCADE, null=False)
+    trade_date = models.DateTimeField(default=default_date, verbose_name='Trade Date')
+    created_timestamp = models.DateTimeField(default=datetime.utcnow, verbose_name='Created Timestamp')
+    comments = models.CharField(max_length=140, null=True, verbose_name='Comments')
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=False, verbose_name='User')
+    group = models.ForeignKey('WatchListGroup', on_delete=models.CASCADE, null=False, verbose_name='Group')
 
     def __str__(self):
         return f"{self.ticker}"
+    
+    class Meta:
+        verbose_name = 'Watchlist Item' 
+        verbose_name_plural = 'Watchlist Items'
 
 class WatchListGroup(models.Model):
-    name = models.CharField(max_length=25, null=False)
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=False) 
-    watchlist_items = models.ManyToManyField(WatchListItem)
+    name = models.CharField(max_length=25, null=False, verbose_name='Name')
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=False, verbose_name='User') 
+    # watchlist_items = models.ManyToManyField(WatchListItem, verbose_name='Watchlist Items')
 
     def __str__(self):
         return f"{self.name}"
+    
+    class Meta:
+        verbose_name = 'Watchlist Group' 
+        verbose_name_plural = 'Watchlist Groups'
