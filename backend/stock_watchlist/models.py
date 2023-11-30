@@ -42,4 +42,3 @@ class WatchListGroup(models.Model):
         verbose_name = 'Watchlist Group'
         verbose_name_plural = 'Watchlist Groups'
 
-# Reverse relation from WatchListGroup to WatchListItem
