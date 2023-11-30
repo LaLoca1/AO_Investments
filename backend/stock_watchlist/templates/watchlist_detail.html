@@ -1,0 +1,17 @@
+<!-- templates/watchlist_detail.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ watchlist.name }} Watchlist</title>
+</head>
+<body>
+  <h2>{{ watchlist.name }} Watchlist</h2>
+  <ul>
+    {% for item in watchlist_items %}
+      <li>{{ item.ticker }} - {{ item.quantity }} - {{ item.price }}</li>
+      <!-- Add more fields as needed -->
+    {% endfor %}
+  </ul>
+  <a href="{% url 'create_watchlist' %}">Create Another Watchlist</a>
+</body>
+</html>

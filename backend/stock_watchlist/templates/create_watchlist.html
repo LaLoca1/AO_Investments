@@ -1,0 +1,15 @@
+<!-- templates/create_watchlist.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Watchlist</title>
+</head>
+<body>
+  <h2>Create Watchlist</h2>
+  <form method="post" action="{% url 'create_watchlist' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Watchlist</button>
+  </form>
+</body>
+</html>
