@@ -3,15 +3,54 @@
 <html>
 <head>
     <title>{{ watchlist.name }} Watchlist</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
   <h2>{{ watchlist.name }} Watchlist</h2>
-  <ul>
-    {% for item in watchlist_items %}
-      <li>{{ item.ticker }} - {{ item.quantity }} - {{ item.price }}</li>
-      <!-- Add more fields as needed -->
-    {% endfor %}
-  </ul>
+  <table>
+    <thead>
+        <tr>
+            <th>Ticker</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Sector</th>
+            <th>Trade Date</th>
+            <th>Created Timestamp</th>
+            <th>Comments</th>
+            <th>User</th>
+            <th>Group</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in watchlist_items %}
+            <tr>
+                <td>{{ item.ticker }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.sector }}</td>
+                <td>{{ item.trade_date }}</td>
+                <td>{{ item.created_timestamp }}</td>
+                <td>{{ item.comments }}</td>
+                <td>{{ item.user }}</td>
+                <td>{{ item.group }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+  <br>
   <a href="{% url 'create_watchlist' %}">Create Another Watchlist</a>
 </body>
 </html>
