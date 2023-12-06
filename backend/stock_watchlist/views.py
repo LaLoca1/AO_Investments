@@ -1,8 +1,33 @@
 # views.py in your app directory
-from django.shortcuts import render, redirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework import generics 
 from .models import WatchListItem, WatchListGroup
+from .serializers import WatchListItemSerializer, WatchListGroupSerializer
 from .forms import WatchListItemForm, WatchListGroupForm
+
+class WatchListItemList(generics.ListCreateAPIView):
+    queryset = WatchListItem.objects.all() 
+    serializer_class = WatchListItemSerializer
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user.userprofile) 
+
+class WatchlistItemCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        # Your logic to create a watchlist item here
+        serializer = WatchListItemSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class WatchListGroupList(generics.ListCreateAPIView):
+    queryset = WatchListGroup.objects.all() 
+    serializer_class = WatchListGroupSerializer
 
 def watchlist_item_list(request):
     watchlist_items = WatchListItem.objects.all()

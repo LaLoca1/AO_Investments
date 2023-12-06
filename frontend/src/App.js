@@ -8,7 +8,8 @@ import Register from "./containers/Register";
 import Login from "./containers/Login";
 import UserProfile from "./containers/UserProfile";
 import Dashboard from "./containers/Dashboard";
-
+import DisplayWatchlist from "./containers/DisplayWatchlist";
+import AddWatchlistItem from "./containers/AddWatchlistItem";
 import { Provider } from "react-redux";
 import store from "./store";
 
@@ -53,6 +54,22 @@ const App = () => (
           element={
             <Layout>
               <Dashboard />
+            </Layout>
+          }
+        />
+        <Route
+          path="/watchlistitems"
+          element={
+            <Layout>
+              <DisplayWatchlist />
+            </Layout>
+          }
+        />
+        <Route
+          path="/addwatchlistitem"
+          element={
+            <Layout>
+              <AddWatchlistItem />
             </Layout>
           }
         />
