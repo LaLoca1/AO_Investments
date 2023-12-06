@@ -21,7 +21,7 @@ class WatchlistItemCreateView(APIView):
         # Your logic to create a watchlist item here
         serializer = WatchListItemSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=self.request.user.userprofile)  # Associate with logged-in user
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
