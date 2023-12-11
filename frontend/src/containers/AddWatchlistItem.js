@@ -9,7 +9,8 @@ const AddWatchlistItem = ({ onItemAdded }) => {
   const [price, setPrice] = useState("");
   const [sector, setSector] = useState("");
   const [tradeDate, setTradeDate] = useState("");
-  const [selectedGroup, setSelectedGroup] = useState(null); // New state for selected group
+  const [comments, setComments] = useState(""); // New state for comments
+  const [selectedGroup, setSelectedGroup] = useState(null);
   const [groups, setGroups] = useState([]);
 
   useEffect(() => {
@@ -39,6 +40,7 @@ const AddWatchlistItem = ({ onItemAdded }) => {
     price,
     sector,
     trade_date: tradeDate,
+    comments, // Include comments in the request
     group: selectedGroup,
   });
 
@@ -60,6 +62,7 @@ const AddWatchlistItem = ({ onItemAdded }) => {
       setPrice("");
       setSector("");
       setTradeDate("");
+      setComments(""); // Clear the comments field
       setSelectedGroup(null);
     } catch (error) {
       console.error("Error adding watchlist item:", error);
@@ -108,6 +111,15 @@ const AddWatchlistItem = ({ onItemAdded }) => {
           type="date"
           value={tradeDate}
           onChange={(e) => setTradeDate(e.target.value)}
+          required
+        />
+
+        {/* The new "Comments" field */}
+        <label>Comments:</label>
+        <input
+          type="text"
+          value={comments}
+          onChange={(e) => setComments(e.target.value)}
           required
         />
 
