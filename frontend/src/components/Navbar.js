@@ -10,6 +10,15 @@ const navbar = ({ isAuthenticated, logout }) => {
                 <NavLink className='nav-link' to='/dashboard'>Dashboard</NavLink>
             </li>
             <li className='nav-item'>
+                <NavLink className='nav-link' to='/watchlistitems'>Watchlist Items</NavLink>
+            </li>
+            <li className='nav-item'>
+                <NavLink className='nav-link' to='/addwatchlistitem'>Add watchlist item</NavLink>
+            </li>
+            <li className='nav-item'>
+                <NavLink className='nav-link' to='/addwatchlistgroup'>Add watchlist group</NavLink>
+            </li>
+            <li className='nav-item'>
                 <NavLink className='nav-link' to='/userprofile'>User Profile</NavLink>
             </li>
             <li className='nav-item'>
@@ -43,9 +52,6 @@ const navbar = ({ isAuthenticated, logout }) => {
                 </button>
                 <div className='collapse navbar-collapse' id='navbarNav'>
                     <ul className='navbar-nav'>
-                        {/* <li className='nav-item'>
-                            <NavLink className='nav-link' exact to='/'>Home</NavLink>
-                        </li> */}
                         { isAuthenticated ? authLinks : guestLinks }
                     </ul>
                 </div>

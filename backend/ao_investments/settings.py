@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "accounts", 
     "user_profile", 
+    "stock_watchlist"
 ]
 
 MIDDLEWARE = [
@@ -82,7 +83,7 @@ WSGI_APPLICATION = "ao_investments.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "ao_investment_final", 
+        "NAME": "ao_investment_test4", 
         "USER": "alex", 
         "PASSWORD": "password", 
         "HOST": 'localhost'
