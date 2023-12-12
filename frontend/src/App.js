@@ -10,7 +10,6 @@ import UserProfile from "./containers/UserProfile";
 import Dashboard from "./containers/Dashboard";
 import DisplayWatchlist from "./containers/DisplayWatchlist";
 import AddWatchlistItem from "./containers/AddWatchlistItem";
-import AddWatchListGroup from "./containers/AddWatchListGroup";
 import { Provider } from "react-redux";
 import store from "./store";
 
@@ -74,14 +73,6 @@ const App = () => (
             </Layout>
           }
           />
-          <Route
-          path="/addwatchlistgroup"
-          element={
-            <Layout>
-              <AddWatchListGroup />
-            </Layout>
-          }
-        />
       </Routes>
     </Router>
   </Provider>

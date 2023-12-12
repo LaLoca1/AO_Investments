@@ -16,9 +16,6 @@ const navbar = ({ isAuthenticated, logout }) => {
                 <NavLink className='nav-link' to='/addwatchlistitem'>Add watchlist item</NavLink>
             </li>
             <li className='nav-item'>
-                <NavLink className='nav-link' to='/addwatchlistgroup'>Add watchlist group</NavLink>
-            </li>
-            <li className='nav-item'>
                 <NavLink className='nav-link' to='/userprofile'>User Profile</NavLink>
             </li>
             <li className='nav-item'>
