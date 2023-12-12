@@ -8,7 +8,7 @@ const DisplayWatchlist = () => {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await axios.get('/watchlist/api/watchlist-items');
+          const response = await axios.get('/watchlist/api/user/watchlist-items');
           setWatchlistItems(response.data);
         } catch (error) {
           console.error('Error fetching data:', error);

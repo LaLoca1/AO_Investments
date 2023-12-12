@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import CSRFToken from "../components/CSRFToken";
 import Cookies from "js-cookie";
@@ -10,21 +10,6 @@ const AddWatchlistItem = ({ onItemAdded }) => {
   const [sector, setSector] = useState("");
   const [tradeDate, setTradeDate] = useState("");
   const [comments, setComments] = useState(""); // New state for comments
-  const [selectedGroup, setSelectedGroup] = useState(null);
-  const [groups, setGroups] = useState([]);
-
-  useEffect(() => {
-    const fetchGroups = async () => {
-      try {
-        const response = await axios.get("/watchlist/api/watchlist-groups");
-        setGroups(response.data);
-      } catch (error) {
-        console.error("Error fetching groups:", error);
-      }
-    };
-
-    fetchGroups();
-  }, []);
 
   const config = {
     headers: {
@@ -41,7 +26,6 @@ const AddWatchlistItem = ({ onItemAdded }) => {
     sector,
     trade_date: tradeDate,
     comments, // Include comments in the request
-    group: selectedGroup || null,
   });
 
   const handleAddItem = async (e) => {
@@ -63,7 +47,6 @@ const AddWatchlistItem = ({ onItemAdded }) => {
       setSector("");
       setTradeDate("");
       setComments(""); // Clear the comments field
-      setSelectedGroup(null);
     } catch (error) {
       console.error("Error adding watchlist item:", error);
     }
@@ -122,23 +105,6 @@ const AddWatchlistItem = ({ onItemAdded }) => {
           onChange={(e) => setComments(e.target.value)}
           required
         />
-
-        {/* The existing dropdown for selecting a group */}
-        <label>Group:</label>
-        <select
-          value={selectedGroup}
-          onChange={(e) => setSelectedGroup(e.target.value)}
-        >
-          <option value="" disabled>
-            Select a group
-          </option>
-          {groups.map((group) => (
-            <option key={group.id} value={group.id}>
-              {group.name}
-            </option>
-          ))}
-        </select>
-
         <button type="submit">Add Item</button>
       </form>
     </div>
