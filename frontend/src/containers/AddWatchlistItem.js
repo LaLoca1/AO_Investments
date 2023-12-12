@@ -126,6 +126,7 @@ const AddWatchlistItem = ({ onItemAdded }) => {
         {/* The existing dropdown for selecting a group */}
         <label>Group:</label>
         <select
+          type="text"
           value={selectedGroup}
           onChange={(e) => setSelectedGroup(e.target.value)}
         >
