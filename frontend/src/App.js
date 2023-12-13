@@ -10,6 +10,7 @@ import UserProfile from "./containers/UserProfile";
 import Dashboard from "./containers/Dashboard";
 import DisplayWatchlist from "./containers/DisplayWatchlist";
 import AddWatchlistItem from "./containers/AddWatchlistItem";
+
 import { Provider } from "react-redux";
 import store from "./store";
 
