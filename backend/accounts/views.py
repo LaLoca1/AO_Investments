@@ -63,7 +63,6 @@ class SignupView(APIView):
 
         username = data['username']
         password = data['password']
-        email = data['email'] 
         re_password  = data['re_password']
 
         try:
@@ -74,11 +73,11 @@ class SignupView(APIView):
                     if len(password) < 6:
                         return Response({ 'error': 'Password must be at least 6 characters' })
                     else:
-                        user = User.objects.create_user(username=username, password=password, email=email)
+                        user = User.objects.create_user(username=username, password=password)
 
                         user = User.objects.get(id=user.id)
 
-                        user_profile = UserProfile.objects.create(user=user, first_name='', last_name='', email='')
+                        user_profile = UserProfile.objects.create(user=user, first_name='', last_name='')
 
                         return Response({ 'success': 'User created successfully' })
             else:

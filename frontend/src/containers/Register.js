@@ -7,13 +7,12 @@ import CSRFToken from '../components/CSRFToken';
 const Register = ({ register, isAuthenticated }) => {
     const [formData, setFormData] = useState({
         username: '',
-        email: '', 
         password: '',
         re_password: ''
     });
     const [accountCreated, setAccountCreated] = useState(false);
 
-    const { username, email, password, re_password } = formData;
+    const { username, password, re_password } = formData;
 
     const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -21,7 +20,7 @@ const Register = ({ register, isAuthenticated }) => {
         e.preventDefault();
 
         if (password === re_password) {
-            register(username, email, password, re_password);
+            register(username, password, re_password);
             setAccountCreated(true);
         }
     };
@@ -46,18 +45,6 @@ const Register = ({ register, isAuthenticated }) => {
                         name='username'
                         onChange={e => onChange(e)}
                         value={username}
-                        required
-                    />
-                </div>
-                <div className='form-group'>
-                    <label className='form-label mt-3'>Email: </label>
-                    <input
-                        className='form-control'
-                        type='email'
-                        placeholder='Email*'
-                        name='email'
-                        onChange={e => onChange(e)}
-                        value={email}
                         required
                     />
                 </div>

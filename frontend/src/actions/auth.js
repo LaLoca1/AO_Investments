@@ -89,7 +89,7 @@ export const login = (username, password) => async (dispatch) => {
 };
 
 export const register =
-  (username, email, password, re_password) => async (dispatch) => {
+  (username, password, re_password) => async (dispatch) => {
     const config = {
       headers: {
         Accept: "application/json",
@@ -98,7 +98,7 @@ export const register =
       },
     };
 
-    const body = JSON.stringify({ username, email, password, re_password });
+    const body = JSON.stringify({ username, password, re_password });
 
     try {
       const res = await axios.post(
