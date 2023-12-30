@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import EditWatchlistItem from "./EditWatchlistItem"; // Import your new component
 
 const DisplayWatchlist = () => {
   const [watchlistItems, setWatchlistItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -11,14 +14,23 @@ const DisplayWatchlist = () => {
 
   const fetchData = async () => {
     try {
+      setLoading(true);
       const response = await axios.get("/watchlist/api/user/watchlist-items");
       setWatchlistItems(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
+    // Add a confirmation dialog before deletion
+    const confirmDelete = window.confirm("Are you sure you want to delete this item?");
+    if (!confirmDelete) {
+      return;
+    }
+
     const config = {
       headers: {
         Accept: "application/json",
@@ -36,19 +48,44 @@ const DisplayWatchlist = () => {
     }
   };
 
+  const handleEdit = async (id) => {
+    try {
+      setLoading(true);
+      const response = await axios.put(`/watchlist/api/edit-watchlist-item/${id}`);
+      setSelectedItem(response.data);
+    } catch (error) {
+      console.error("Error fetching watchlist item for editing:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <h1>Watchlist Items</h1>
-      <ul>
-        {watchlistItems.map((item) => (
-          <li key={item.id}>
-            {item.id} - {item.ticker} - {item.quantity} - {item.price} -{" "}
-            {item.sector} - {new Date(item.trade_date).toLocaleDateString()} -{" "}
-            {item.comments}
-            <button onClick={() => handleDelete(item.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <ul>
+          {watchlistItems.map((item) => (
+            <li key={item.id}>
+              {item.id} - {item.ticker} - {item.quantity} - {item.price} -{" "}
+              {item.sector} - {new Date(item.trade_date).toLocaleDateString()} -{" "}
+              {item.comments}
+              <button onClick={() => handleDelete(item.id)}>Delete</button>
+              <button onClick={() => handleEdit(item.id)}>Edit</button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Display the EditWatchlistItem component as a modal */}
+      {selectedItem && (
+        <EditWatchlistItem
+          item={selectedItem}
+          onClose={() => setSelectedItem(null)}
+        />
+      )}
     </div>
   );
 };
