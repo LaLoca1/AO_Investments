@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
+from django.shortcuts import get_object_or_404
 from rest_framework import status, generics
 from .models import WatchListItems
 from .serializers import WatchListItemSerializer
@@ -31,3 +32,38 @@ class WatchListItemCreateView(APIView):
             serializer.save(user=self.request.user.userprofile)  # Associate with logged-in user
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class DeleteWatchListItem(APIView):
+    permission_classes = [IsAuthenticated] 
+
+    def delete(self, request, pk, format=None):
+        # Get the watchlist item or return 404 if not found
+        watchlist_item = get_object_or_404(WatchListItems, pk=pk)
+
+        # Ensure the user making the request is the owner of the watchlist item
+        if watchlist_item.user == request.user.userprofile:
+            watchlist_item.delete()
+            return Response({"success": "Watchlist item deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({"error": "You don't have permission to delete the watchlist item"}, status=status.HTTP_403_FORBIDDEN)
+        
+class EditWatchListItem(APIView):
+    permission_classes = [IsAuthenticated] 
+
+    def put(self, request, pk, format=None):
+            # Get the watchlist item 
+            watchlist_item = get_object_or_404(WatchListItems, pk=pk) 
+
+            # Ensure the user making the request is the owner of the watchlist item
+            if watchlist_item.user == request.user.userprofile:
+                serializer = WatchListItemSerializer(watchlist_item, data=request.data, partial=True) 
+                if serializer.is_valid():
+                    serializer.save() 
+                    return Response({"detail": "Watchlist item updated successfully"}, status=status.HTTP_200_OK)
+                return Response({"detail": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({"error": "You don't have permission to edit this watchlist item"}, status=status.HTTP_403_FORBIDDEN)
+
+
+
+         

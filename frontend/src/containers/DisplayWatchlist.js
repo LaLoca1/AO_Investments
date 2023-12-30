@@ -17,13 +17,14 @@ const DisplayWatchlist = () => {
   
       fetchData();
     }, []);
-
+    
     return (
         <div>
           <h1>Watchlist Items</h1>
           <ul>
             {watchlistItems.map(item => (
-              <li key={item.id}>{item.ticker} - {item.quantity} - {item.price}</li>
+              <li key={item.id}>
+                {item.id} - {item.ticker} - {item.quantity} - {item.price} - {item.sector} - {new Date(item.trade_date).toLocaleDateString()} - {item.comments}</li>
             ))}
           </ul>
         </div>
