@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import EditWatchlistItem from "./EditWatchlistItem"; // Import your new component
+// import EditWatchlistItem from "./EditWatchlistItem"; // Import your new component
 
 const DisplayWatchlist = () => {
   const [watchlistItems, setWatchlistItems] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -48,18 +47,6 @@ const DisplayWatchlist = () => {
     }
   };
 
-  const handleEdit = async (id) => {
-    try {
-      setLoading(true);
-      const response = await axios.put(`/watchlist/api/edit-watchlist-item/${id}`);
-      setSelectedItem(response.data);
-    } catch (error) {
-      console.error("Error fetching watchlist item for editing:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div>
       <h1>Watchlist Items</h1>
@@ -73,19 +60,11 @@ const DisplayWatchlist = () => {
               {item.sector} - {new Date(item.trade_date).toLocaleDateString()} -{" "}
               {item.comments}
               <button onClick={() => handleDelete(item.id)}>Delete</button>
-              <button onClick={() => handleEdit(item.id)}>Edit</button>
             </li>
           ))}
         </ul>
       )}
 
-      {/* Display the EditWatchlistItem component as a modal */}
-      {selectedItem && (
-        <EditWatchlistItem
-          item={selectedItem}
-          onClose={() => setSelectedItem(null)}
-        />
-      )}
     </div>
   );
 };
