@@ -53,18 +53,37 @@ const DisplayWatchlist = () => {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <ul>
-          {watchlistItems.map((item) => (
-            <li key={item.id}>
-              {item.id} - {item.ticker} - {item.quantity} - {item.price} -{" "}
-              {item.sector} - {new Date(item.trade_date).toLocaleDateString()} -{" "}
-              {item.comments}
-              <button onClick={() => handleDelete(item.id)}>Delete</button>
-            </li>
-          ))}
-        </ul>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Ticker</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Sector</th>
+              <th>Trade Date</th>
+              <th>Comments</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {watchlistItems.map((item) => (
+              <tr key={item.id}>
+                <td>{item.id}</td>
+                <td>{item.ticker}</td>
+                <td>{item.quantity}</td>
+                <td>{item.price}</td>
+                <td>{item.sector}</td>
+                <td>{new Date(item.trade_date).toLocaleDateString()}</td>
+                <td>{item.comments}</td>
+                <td>
+                  <button onClick={() => handleDelete(item.id)}>Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
-
     </div>
   );
 };
