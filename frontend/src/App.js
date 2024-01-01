@@ -10,6 +10,7 @@ import UserProfile from "./containers/UserProfile";
 import Dashboard from "./containers/Dashboard";
 import DisplayWatchlist from "./containers/DisplayWatchlist";
 import AddWatchlistItem from "./containers/AddWatchlistItem";
+import DisplayPortfolio from "./containers/DisplayPortfolio";
 
 import { Provider } from "react-redux";
 import store from "./store";
@@ -55,6 +56,14 @@ const App = () => (
           element={
             <Layout>
               <Dashboard />
+            </Layout>
+          }
+        />
+        <Route
+          path="/portfolio"
+          element={
+            <Layout>
+              <DisplayPortfolio />
             </Layout>
           }
         />
