@@ -19,6 +19,7 @@ class WatchListItems(models.Model):
     trade_date = models.DateTimeField(default=default_date)
     created_timestamp = models.DateTimeField(default=datetime.utcnow)
     comments = models.CharField(max_length=140, null=True)
+    transactionType = models.CharField(max_length=10) 
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=False)
 
     def __str__(self):
