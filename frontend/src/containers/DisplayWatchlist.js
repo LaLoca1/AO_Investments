@@ -58,7 +58,7 @@ const DisplayWatchlist = () => {
             <li key={item.id}>
               {item.id} - {item.ticker} - {item.quantity} - {item.price} -{" "}
               {item.sector} - {new Date(item.trade_date).toLocaleDateString()} -{" "}
-              {item.comments}
+              {item.comments} - {item.transactionType} 
               <button onClick={() => handleDelete(item.id)}>Delete</button>
             </li>
           ))}

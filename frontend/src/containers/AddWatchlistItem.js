@@ -10,6 +10,7 @@ const AddWatchlistItem = ({ onItemAdded }) => {
   const [sector, setSector] = useState("");
   const [tradeDate, setTradeDate] = useState("");
   const [comments, setComments] = useState(""); // New state for comments
+  const [transactionType, setTransactionType] = useState("");
 
   const config = {
     headers: {
@@ -25,7 +26,8 @@ const AddWatchlistItem = ({ onItemAdded }) => {
     price,
     sector,
     trade_date: tradeDate,
-    comments, // Include comments in the request
+    comments,
+    transactionType,
   });
 
   const handleAddItem = async (e) => {
@@ -46,7 +48,8 @@ const AddWatchlistItem = ({ onItemAdded }) => {
       setPrice("");
       setSector("");
       setTradeDate("");
-      setComments(""); // Clear the comments field
+      setComments("");
+      setTransactionType("");
     } catch (error) {
       console.error("Error adding watchlist item:", error);
     }
@@ -103,6 +106,14 @@ const AddWatchlistItem = ({ onItemAdded }) => {
           type="text"
           value={comments}
           onChange={(e) => setComments(e.target.value)}
+          required
+        />
+
+        <label>Transaction Type:</label>
+        <input
+          type="text"
+          value={transactionType}
+          onChange={(e) => setTransactionType(e.target.value)}
           required
         />
         <button type="submit">Add Item</button>
