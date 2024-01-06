@@ -8,8 +8,11 @@ import DisplayPortfolio from "./DisplayPortfolio";
 
 const StockPortfolio = () => {
   const [watchlistItems, setWatchlistItems] = useState([]);
+  const [filter, setFilter] = useState("");
   const [loading, setLoading] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [refreshCounter, setRefreshCounter] = useState(0);
 
   // Fetch watchlist items on component mount
   useEffect(() => {
@@ -26,6 +29,11 @@ const StockPortfolio = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const refreshData = () => {
+    setRefreshCounter(c => c + 1);
+    fetchData();
   };
 
   const handleAddItem = async (newItem) => {
@@ -47,6 +55,7 @@ const StockPortfolio = () => {
       if (response.status === 201) {
         // Update the watchlist items state here
         fetchData();
+        refreshData(); 
       }
     } catch (error) {
       console.error("Error adding watchlist item:", error);
@@ -112,17 +121,27 @@ const StockPortfolio = () => {
       await axios.delete(`/watchlist/api/delete-watchlist-item/${id}`, config);
       // Refresh the watchlist after deletion
       fetchData();
+      refreshData(); 
     } catch (error) {
       console.error("Error deleting watchlist item:", error);
     }
   };
 
+  const filteredItems = filter
+    ? watchlistItems.filter((item) =>
+        item.ticker.toLowerCase().includes(filter.toLowerCase())
+      )
+    : watchlistItems;
+
   return (
     <div>
-      <DisplayPortfolio />
-      <AddWatchlistItem onItemAdded={handleAddItem} />
+      <DisplayPortfolio key={refreshCounter} />
+      <button onClick={() => setShowAddForm(!showAddForm)}>Add Item</button>
+      {showAddForm && <AddWatchlistItem onItemAdded={handleAddItem} />}
       <DisplayWatchlist
-        items={watchlistItems}
+        items={filteredItems}
+        filter={filter}
+        setFilter={setFilter}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
@@ -136,5 +155,4 @@ const StockPortfolio = () => {
     </div>
   );
 };
-
 export default StockPortfolio;
