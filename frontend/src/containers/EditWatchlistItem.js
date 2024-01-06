@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
-import Cookies from "js-cookie";
-import CSRFToken from "../components/CSRFToken";
 
 const EditWatchlistItem = ({ item, onSave, onCancel }) => {
   const [editedItem, setEditedItem] = useState({ ...item });

@@ -10,6 +10,9 @@ const navbar = ({ isAuthenticated, logout }) => {
                 <NavLink className='nav-link' to='/dashboard'>Dashboard</NavLink>
             </li>
             <li className='nav-item'>
+                <NavLink className='nav-link' to='/stockportfolio'>StockPortfolio</NavLink>
+            </li>
+            <li className='nav-item'>
                 <NavLink className='nav-link' to='/portfolio'>Portfolio</NavLink>
             </li>
             <li className='nav-item'>
