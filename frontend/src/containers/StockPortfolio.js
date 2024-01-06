@@ -1,59 +1,140 @@
-import React, {useState, useEffect } from 'react'; 
-import axios from 'axios'; 
-import DisplayWatchlist from './DisplayWatchlist';
-import AddWatchlistItem from './AddWatchlistItem';
-import EditWatchlistItem from './EditWatchlistItem';
-import DisplayPortfolio from './DisplayPortfolio';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
+import DisplayWatchlist from "./DisplayWatchlist";
+import AddWatchlistItem from "./AddWatchlistItem";
+import EditWatchlistItem from "./EditWatchlistItem";
+import DisplayPortfolio from "./DisplayPortfolio";
 
 const StockPortfolio = () => {
-    const [watchlistItems, setWatchlistItems] = useState([]);
-    const [editingItem, setEditingItem] = useState(null); 
-    const [showAddForm, setShowAddForm] = useState(false); 
+  const [watchlistItems, setWatchlistItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
 
-    // Fetch watchlist items on component mount 
-    useEffect(() => {
-        fetchWatchlistItems(); 
-    }, []); 
+  // Fetch watchlist items on component mount
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-    const fetchWatchlistItems = async () => {
-        try {
-            const response = await axios.get('/watchlist/api/user/watchlist-items'); 
-            setWatchlistItems(response.data); 
-        } catch (error) {
-            console.error('Error fetching watchlist items:', error); 
-        }
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("/watchlist/api/user/watchlist-items");
+      setWatchlistItems(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddItem = async (newItem) => {
+    const config = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-CSRFToken": Cookies.get("csrftoken"),
+      },
     };
 
-    const handleAddItem = async (newItem) => {
-        setShowAddForm(false); 
-    }; 
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/watchlist/api/create-watchlist-item`,
+        newItem,
+        config
+      );
 
-    const handleEdit = (item) => {
-        setEditingItem(item); 
+      if (response.status === 201) {
+        // Update the watchlist items state here
+        fetchData();
+      }
+    } catch (error) {
+      console.error("Error adding watchlist item:", error);
+    }
+  };
+
+  const handleEdit = (item) => {
+    setEditingItem(item);
+  };
+
+  const handleSaveEdit = async (editedItem) => {
+    const config = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-CSRFToken": Cookies.get("csrftoken"),
+      },
     };
 
-    const handleSaveEdit = async (editedItem) => {
-        // Logic to save the edited item to your backend and update the list 
-    };
+    try {
+      const response = await axios.put(
+        `/watchlist/api/edit-watchlist-item/${editedItem.id}`,
+        editedItem,
+        config
+      );
 
-    const handleCancelEdit = () => {
-        setEditingItem(null); 
-    }; 
+      if (response.status === 200) {
+        setWatchlistItems((prevItems) =>
+          prevItems.map((item) =>
+            item.id === editedItem.id ? editedItem : item
+          )
+        );
 
-    return (
-        <div>
-            <DisplayPortfolio /> 
-            <AddWatchlistItem onItemAdded={handleAddItem} />
-            <DisplayWatchlist items={watchlistItems} onEdit={handleEdit} /> 
-            {editingItem && (
-                <EditWatchlistItem
-                    item={editingItem}
-                    onSave={handleSaveEdit} 
-                    onCancel={handleCancelEdit}
-                    />
-            )}
-        </div>
+        setEditingItem(null);
+      }
+    } catch (error) {
+      console.error("Error updating watchlist item:", error);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingItem(null);
+  };
+
+  const handleDelete = async (id) => {
+    // Add a confirmation dialog before deletion
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this item?"
     );
-}; 
+    if (!confirmDelete) {
+      return;
+    }
 
-export default StockPortfolio; 
+    const config = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-CSRFToken": Cookies.get("csrftoken"),
+      },
+    };
+
+    try {
+      await axios.delete(`/watchlist/api/delete-watchlist-item/${id}`, config);
+      // Refresh the watchlist after deletion
+      fetchData();
+    } catch (error) {
+      console.error("Error deleting watchlist item:", error);
+    }
+  };
+
+  return (
+    <div>
+      <DisplayPortfolio />
+      <AddWatchlistItem onItemAdded={handleAddItem} />
+      <DisplayWatchlist
+        items={watchlistItems}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+      {editingItem && (
+        <EditWatchlistItem
+          item={editingItem}
+          onSave={handleSaveEdit}
+          onCancel={handleCancelEdit}
+        />
+      )}
+    </div>
+  );
+};
+
+export default StockPortfolio;

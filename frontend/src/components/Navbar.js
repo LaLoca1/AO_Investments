@@ -13,15 +13,6 @@ const navbar = ({ isAuthenticated, logout }) => {
                 <NavLink className='nav-link' to='/stockportfolio'>StockPortfolio</NavLink>
             </li>
             <li className='nav-item'>
-                <NavLink className='nav-link' to='/portfolio'>Portfolio</NavLink>
-            </li>
-            <li className='nav-item'>
-                <NavLink className='nav-link' to='/watchlistitems'>Watchlist Items</NavLink>
-            </li>
-            <li className='nav-item'>
-                <NavLink className='nav-link' to='/addwatchlistitem'>Add watchlist item</NavLink>
-            </li>
-            <li className='nav-item'>
                 <NavLink className='nav-link' to='/userprofile'>User Profile</NavLink>
             </li>
             <li className='nav-item'>

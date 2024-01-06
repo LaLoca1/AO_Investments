@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
 import CSRFToken from "../components/CSRFToken";
-import Cookies from "js-cookie";
 
 const AddWatchlistItem = ({ onItemAdded }) => {
   const [ticker, setTicker] = useState("");
@@ -12,47 +10,28 @@ const AddWatchlistItem = ({ onItemAdded }) => {
   const [comments, setComments] = useState(""); // New state for comments
   const [transactionType, setTransactionType] = useState("");
 
-  const config = {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-CSRFToken": Cookies.get("csrftoken"),
-    },
-  };
-
-  const body = JSON.stringify({
-    ticker,
-    quantity,
-    price,
-    sector,
-    trade_date: tradeDate,
-    comments,
-    transactionType,
-  });
-
   const handleAddItem = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/watchlist/api/create-watchlist-item`,
-        body,
-        config
-      );
 
-      if (onItemAdded) {
-        onItemAdded(response.data);
-      }
+    const newItem = {
+      ticker,
+      quantity,
+      price,
+      sector,
+      trade_date: tradeDate,
+      comments,
+      transactionType,
+    };
 
-      setTicker("");
-      setQuantity("");
-      setPrice("");
-      setSector("");
-      setTradeDate("");
-      setComments("");
-      setTransactionType("");
-    } catch (error) {
-      console.error("Error adding watchlist item:", error);
-    }
+    onItemAdded(newItem);
+
+    setTicker("");
+    setQuantity("");
+    setPrice("");
+    setSector("");
+    setTradeDate("");
+    setComments("");
+    setTransactionType("");
   };
 
   return (

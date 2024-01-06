@@ -8,9 +8,6 @@ import Register from "./containers/Register";
 import Login from "./containers/Login";
 import UserProfile from "./containers/UserProfile";
 import Dashboard from "./containers/Dashboard";
-import DisplayWatchlist from "./containers/DisplayWatchlist";
-import AddWatchlistItem from "./containers/AddWatchlistItem";
-import DisplayPortfolio from "./containers/DisplayPortfolio";
 import StockPortfolio from "./containers/StockPortfolio";
 
 import { Provider } from "react-redux";
@@ -65,30 +62,6 @@ const App = () => (
           element={
             <Layout>
               <StockPortfolio />
-            </Layout>
-          }
-        />
-        <Route
-          path="/portfolio"
-          element={
-            <Layout>
-              <DisplayPortfolio />
-            </Layout>
-          }
-        />
-        <Route
-          path="/watchlistitems"
-          element={
-            <Layout>
-              <DisplayWatchlist />
-            </Layout>
-          }
-        />
-        <Route
-          path="/addwatchlistitem"
-          element={
-            <Layout>
-              <AddWatchlistItem />
             </Layout>
           }
         />
