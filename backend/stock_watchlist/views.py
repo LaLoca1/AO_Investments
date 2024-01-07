@@ -3,10 +3,12 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from django.conf import settings
 from rest_framework import status, generics
 from .models import WatchListItems
 from .serializers import WatchListItemSerializer
-
+import requests 
 # Create your views here.
 
 @api_view(['GET'])
@@ -64,6 +66,18 @@ class EditWatchListItem(APIView):
             else:
                 return Response({"error": "You don't have permission to edit this watchlist item"}, status=status.HTTP_403_FORBIDDEN)
 
+def get_stock_data(request, ticker):
+    api_key = settings.ALPHA_VANTAGE_API_KEY 
+    url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={ticker}&apikey={api_key}'
+
+    try: 
+        response = requests.get(url) 
+        response.raise_for_status() 
+        data = response.json() 
+    except requests.exceptions.HTTPError as err:
+        return JsonResponse({'error': str(err)}, status=500) 
+    
+    return JsonResponse(data) 
 
 
          
