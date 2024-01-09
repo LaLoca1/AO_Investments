@@ -19,19 +19,19 @@ US_PUBLIC_HOLIDAYS = [
 def default_trade_date(market):
     if market == 'UK':
         holidays_list = UK_PUBLIC_HOLIDAYS
-        timezone = 'Europe/London' 
+        timezone_name = 'Europe/London'
     elif market == 'US':
         holidays_list = US_PUBLIC_HOLIDAYS
-        timezone_name = 'America/New_York' 
+        timezone_name = 'America/New_York'
     else:
-        raise ValueError("Invalid market") 
+        raise ValueError("Invalid market")
 
     trade_date = timezone.now().astimezone(pytz.timezone(timezone_name)).date()
 
     while trade_date.weekday() >= 5 or trade_date.isoformat() in holidays_list:
         trade_date -= timedelta(days=1)
-    
-    return trade_date 
+
+    return trade_date
 
 class Transaction(models.Model):
     MARKET_CHOICES = [
