@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from .models import WatchListItems
+from .models import Transaction
 
-class WatchListItemSerializer(serializers.ModelSerializer):
+class TransactionSerializer(serializers.ModelSerializer):
     class Meta: 
-        model = WatchListItems
+        model = Transaction
         fields = '__all__' 
         read_only_fields = ['user']

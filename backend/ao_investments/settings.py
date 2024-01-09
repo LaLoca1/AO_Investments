@@ -83,7 +83,7 @@ WSGI_APPLICATION = "ao_investments.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "ao_investment_test4", 
+        "NAME": "ao_investment_tran", 
         "USER": "alex", 
         "PASSWORD": "password", 
         "HOST": 'localhost'

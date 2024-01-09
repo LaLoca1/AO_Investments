@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
                 ("sector", models.CharField(max_length=100)),
                 (
                     "trade_date",
-                    models.DateTimeField(default=stock_watchlist.models.default_date),
+                    models.DateTimeField(default=stock_watchlist.models.default_trade_date),
                 ),
                 (
                     "created_timestamp",

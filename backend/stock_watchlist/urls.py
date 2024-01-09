@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import WatchListItemList, WatchListItemCreateView, user_watchlist_items, DeleteWatchListItem, EditWatchListItem
+from .views import TransactionList, CreateTransactionView, DeleteTransactionView, EditTransactionView, user_transaction_items
 
 urlpatterns = [
-    path('api/watchlist-items', WatchListItemList.as_view(), name='watchlist-item-list'),
-    path('api/create-watchlist-item', WatchListItemCreateView.as_view(), name='watchlist-item-create'),
-    path('api/delete-watchlist-item/<int:pk>', DeleteWatchListItem.as_view(), name='delete-watchlist-item'), 
-    path('api/edit-watchlist-item/<int:pk>', EditWatchListItem.as_view(), name='edit-watchlist-item'), 
-    path('api/user/watchlist-items', user_watchlist_items, name='user-watchlist-items'),
+    path('api/transaction-items', TransactionList.as_view(), name='transaction-list'),
+    path('api/create-transaction-item', CreateTransactionView.as_view(), name='create-transaction'),
+    path('api/delete-transaction-item/<int:pk>', DeleteTransactionView.as_view(), name='delete-transaction'), 
+    path('api/edit-transaction-item/<int:pk>', EditTransactionView.as_view(), name='edit-transaction'), 
+    path('api/user/transaction-items', user_transaction_items, name='user-transaction-items'),
 ]

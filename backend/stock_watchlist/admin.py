@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import WatchListItems
+from .models import Transaction
 
 # Register your models here.
 
-admin.site.register(WatchListItems) 
+admin.site.register(Transaction) 
