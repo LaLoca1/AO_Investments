@@ -64,7 +64,35 @@ class Transaction(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk: # Checking if it's a new instance
             self.trade_date = default_trade_date(self.market) 
+
+            if self.transactionType == 'sell':
+                self.apply_fifo() 
+
         super().save(*args, **kwargs)
+
+    def apply_fifo(self):
+        sell_quantity = self.quantity 
+        buy_transactions = Transaction.objects.filter(
+            user=self.user, 
+            ticker=self.ticker, 
+            transactionType='buy', 
+            quantity__gt = 0 
+        ).order_by('trade_date')
+
+        for transaction in buy_transactions:
+            if sell_quantity <= 0:
+                break 
+
+            if transaction.quantity <= sell_quantity:
+                sell_quantity -= transaction.quantity
+                transaction.quantity = 0 
+            
+            else: 
+                transaction.quantity -= sell_quantity
+                sell_quantity = 0 
+
+            transaction.save(update_fields=['quantity']) 
+
     
     def __str__(self):
         return f"{self.ticker} ({self.transactionType}) - {self.quantity} @ {self.price}"

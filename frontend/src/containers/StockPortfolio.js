@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import DisplayWatchlist from "./DisplayWatchlist";
-import AddWatchlistItem from "./AddWatchlistItem";
-import EditWatchlistItem from "./EditWatchlistItem";
+import DisplayTransactions from "./DisplayTransactions";
+import AddTransaction from "./AddTransaction";
+import EditTransaction from "./EditTransaction";
 import DisplayPortfolio from "./DisplayPortfolio";
 
 const StockPortfolio = () => {
@@ -22,7 +22,7 @@ const StockPortfolio = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("/watchlist/api/user/transaction-items");
+      const response = await axios.get("/watchlist/api/user/transaction-items/");
       setWatchlistItems(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -47,7 +47,7 @@ const StockPortfolio = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/watchlist/api/create-transaction-item`,
+        `${process.env.REACT_APP_API_URL}/watchlist/api/create-transaction-item/`,
         newItem,
         config
       );
@@ -77,7 +77,7 @@ const StockPortfolio = () => {
 
     try {
       const response = await axios.put(
-        `/watchlist/api/edit-transaction-item/${editedItem.id}`,
+        `/watchlist/api/transaction-item/${editedItem.id}`,
         editedItem,
         config
       );
@@ -118,7 +118,7 @@ const StockPortfolio = () => {
     };
 
     try {
-      await axios.delete(`/watchlist/api/delete-transaction-item/${id}`, config);
+      await axios.delete(`/watchlist/api/transaction-item/${id}`, config);
       // Refresh the watchlist after deletion
       fetchData();
       refreshData(); 
@@ -137,8 +137,8 @@ const StockPortfolio = () => {
     <div>
       <DisplayPortfolio key={refreshCounter} />
       <button onClick={() => setShowAddForm(!showAddForm)}>Add Item</button>
-      {showAddForm && <AddWatchlistItem onItemAdded={handleAddItem} />}
-      <DisplayWatchlist
+      {showAddForm && <AddTransaction onItemAdded={handleAddItem} />}
+      <DisplayTransactions
         items={filteredItems}
         filter={filter}
         setFilter={setFilter}
@@ -146,7 +146,7 @@ const StockPortfolio = () => {
         onDelete={handleDelete}
       />
       {editingItem && (
-        <EditWatchlistItem
+        <EditTransaction
           item={editingItem}
           onSave={handleSaveEdit}
           onCancel={handleCancelEdit}
