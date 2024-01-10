@@ -12,7 +12,7 @@ const DisplayPortfolio = () => {
   const fetchPortfolioData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("/watchlist/api/user/watchlist-items");
+      const response = await axios.get("/watchlist/api/user/transaction-items");
       setPortfolio(calculatePortfolio(response.data));
     } catch (error) {
       console.error("Error fetching portfolio data:", error);

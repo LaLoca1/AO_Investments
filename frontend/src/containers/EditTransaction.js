@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const EditWatchlistItem = ({ item, onSave, onCancel }) => {
+const EditTransaction = ({ item, onSave, onCancel }) => {
   const [editedItem, setEditedItem] = useState({ ...item });
 
   const handleChange = (e) => {
@@ -36,7 +36,7 @@ const EditWatchlistItem = ({ item, onSave, onCancel }) => {
         </label>
 
         <label>
-          Price:
+          Price(£):
           <input
             type="number"
             name="price"
@@ -54,7 +54,7 @@ const EditWatchlistItem = ({ item, onSave, onCancel }) => {
             onChange={handleChange}
           />
         </label>
-
+        
         <label>
           Trade Date:
           <input
@@ -81,4 +81,4 @@ const EditWatchlistItem = ({ item, onSave, onCancel }) => {
   );
 };
 
-export default EditWatchlistItem;
+export default EditTransaction;

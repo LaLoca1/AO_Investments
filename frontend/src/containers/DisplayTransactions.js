@@ -1,4 +1,4 @@
-const DisplayWatchlist = ({ items, filter, setFilter, onEdit, onDelete }) => {
+const DisplayTransaction = ({ items, filter, setFilter, onEdit, onDelete }) => {
   return (
     <div>
       <h1>Watchlist Items</h1>
@@ -22,7 +22,7 @@ const DisplayWatchlist = ({ items, filter, setFilter, onEdit, onDelete }) => {
           {items.map((item) => (
             <li key={item.id}>
               {item.ticker} - {item.quantity} - {item.price} - {item.sector}-{" "}
-              {new Date(item.trade_date).toLocaleDateString()} - {item.comments}
+              {new Date(item.trade_date).toLocaleDateString()} - {item.comments} - {item.market}
               - {item.transactionType}
               <button onClick={() => onEdit(item)}>Edit</button>
               <button onClick={() => onDelete(item.id)}>Delete</button>
@@ -36,4 +36,4 @@ const DisplayWatchlist = ({ items, filter, setFilter, onEdit, onDelete }) => {
   );
 };
 
-export default DisplayWatchlist;
+export default DisplayTransaction;

@@ -17,21 +17,30 @@ US_PUBLIC_HOLIDAYS = [
 ]
 
 def default_trade_date(market):
+    # Get the current date and time with timezone information
+    now = timezone.now()
+
+    # Adjust the timezone based on the market
     if market == 'UK':
+        tz = pytz.timezone('Europe/London')
         holidays_list = UK_PUBLIC_HOLIDAYS
-        timezone_name = 'Europe/London'
     elif market == 'US':
+        tz = pytz.timezone('America/New_York')
         holidays_list = US_PUBLIC_HOLIDAYS
-        timezone_name = 'America/New_York'
     else:
         raise ValueError("Invalid market")
 
-    trade_date = timezone.now().astimezone(pytz.timezone(timezone_name)).date()
+    # Convert 'now' to the market's timezone
+    trade_datetime = now.astimezone(tz)
 
+    # Extract just the date part
+    trade_date = trade_datetime.date()
+
+    # Adjust for weekends and market-specific holidays
     while trade_date.weekday() >= 5 or trade_date.isoformat() in holidays_list:
         trade_date -= timedelta(days=1)
 
-    return trade_date
+    return trade_datetime.replace(year=trade_date.year, month=trade_date.month, day=trade_date.day)
 
 class Transaction(models.Model):
     MARKET_CHOICES = [

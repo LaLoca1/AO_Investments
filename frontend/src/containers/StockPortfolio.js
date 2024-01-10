@@ -22,7 +22,7 @@ const StockPortfolio = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("/watchlist/api/user/watchlist-items");
+      const response = await axios.get("/watchlist/api/user/transaction-items");
       setWatchlistItems(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -47,7 +47,7 @@ const StockPortfolio = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/watchlist/api/create-watchlist-item`,
+        `${process.env.REACT_APP_API_URL}/watchlist/api/create-transaction-item`,
         newItem,
         config
       );
@@ -77,7 +77,7 @@ const StockPortfolio = () => {
 
     try {
       const response = await axios.put(
-        `/watchlist/api/edit-watchlist-item/${editedItem.id}`,
+        `/watchlist/api/edit-transaction-item/${editedItem.id}`,
         editedItem,
         config
       );
@@ -118,7 +118,7 @@ const StockPortfolio = () => {
     };
 
     try {
-      await axios.delete(`/watchlist/api/delete-watchlist-item/${id}`, config);
+      await axios.delete(`/watchlist/api/delete-transaction-item/${id}`, config);
       // Refresh the watchlist after deletion
       fetchData();
       refreshData(); 

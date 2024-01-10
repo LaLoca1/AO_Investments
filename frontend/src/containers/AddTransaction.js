@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import CSRFToken from "../components/CSRFToken";
 
-const AddWatchlistItem = ({ onItemAdded }) => {
+const AddTransaction = ({ onItemAdded }) => {
   const [ticker, setTicker] = useState("");
   const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState("");
   const [sector, setSector] = useState("");
+  const [market, setMarket] = useState("");
   const [tradeDate, setTradeDate] = useState("");
   const [comments, setComments] = useState(""); // New state for comments
   const [transactionType, setTransactionType] = useState("");
@@ -18,6 +19,7 @@ const AddWatchlistItem = ({ onItemAdded }) => {
       quantity,
       price,
       sector,
+      market,
       trade_date: tradeDate,
       comments,
       transactionType,
@@ -29,6 +31,7 @@ const AddWatchlistItem = ({ onItemAdded }) => {
     setQuantity("");
     setPrice("");
     setSector("");
+    setMarket("");
     setTradeDate("");
     setComments("");
     setTransactionType("");
@@ -55,7 +58,7 @@ const AddWatchlistItem = ({ onItemAdded }) => {
           required
         />
 
-        <label>Price:</label>
+        <label>Price(£):</label>
         <input
           type="number"
           value={price}
@@ -71,6 +74,14 @@ const AddWatchlistItem = ({ onItemAdded }) => {
           required
         />
 
+        <label>Market(UK/US):</label>
+        <input
+          type="text"
+          value={market}
+          onChange={(e) => setMarket(e.target.value)}
+          required
+        />
+
         <label>Trade Date:</label>
         <input
           type="date"
@@ -78,8 +89,7 @@ const AddWatchlistItem = ({ onItemAdded }) => {
           onChange={(e) => setTradeDate(e.target.value)}
           required
         />
-
-        {/* The new "Comments" field */}
+        
         <label>Comments:</label>
         <input
           type="text"
@@ -88,7 +98,7 @@ const AddWatchlistItem = ({ onItemAdded }) => {
           required
         />
 
-        <label>Transaction Type:</label>
+        <label>Transaction Type(Buy/Sell):</label>
         <input
           type="text"
           value={transactionType}
@@ -101,4 +111,4 @@ const AddWatchlistItem = ({ onItemAdded }) => {
   );
 };
 
-export default AddWatchlistItem;
+export default AddTransaction;
