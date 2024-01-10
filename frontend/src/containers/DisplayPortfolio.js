@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const DisplayPortfolio = () => {
-  const [portfolio, setPortfolio] = useState({});
+  const [portfolio, setPortfolio] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -12,8 +12,8 @@ const DisplayPortfolio = () => {
   const fetchPortfolioData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("/watchlist/api/user/transaction-items/");
-      setPortfolio(response.data); 
+      const response = await axios.get("/watchlist/api/user/portfolio/");
+      setPortfolio(response.data);  // Assuming this is already aggregated data
     } catch (error) {
       console.error("Error fetching portfolio data:", error);
     } finally {
@@ -36,11 +36,11 @@ const DisplayPortfolio = () => {
             </tr>
           </thead>
           <tbody>
-            {portfolio.map(item => (
-              <tr key={item.ticker}>
-                <td>{item.ticker}</td>
-                <td>{item.totalQuantity}</td>
-                <td>${item.averagePrice.toFixed(2)}</td>
+            {portfolio.map(({ ticker, totalQuantity, averagePrice }) => (
+              <tr key={ticker}>
+                <td>{ticker}</td>
+                <td>{totalQuantity}</td>
+                <td>${averagePrice.toFixed(2)}</td>
               </tr>
             ))}
           </tbody>

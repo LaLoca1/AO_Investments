@@ -77,7 +77,7 @@ const StockPortfolio = () => {
 
     try {
       const response = await axios.put(
-        `/watchlist/api/transaction-item/${editedItem.id}`,
+        `/watchlist/api/edit-transaction-item/${editedItem.id}/`,
         editedItem,
         config
       );
@@ -118,7 +118,7 @@ const StockPortfolio = () => {
     };
 
     try {
-      await axios.delete(`/watchlist/api/transaction-item/${id}`, config);
+      await axios.delete(`/watchlist/api/delete-transaction-item/${id}/`, config);
       // Refresh the watchlist after deletion
       fetchData();
       refreshData(); 
