@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.db.models import Sum, Avg 
+from django.db.models import Sum, Avg, Case, When, Sum, F, IntegerField 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import get_object_or_404
@@ -69,14 +69,23 @@ class PortfolioView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user_profile = request.user.userprofile 
+        user_profile = request.user.userprofile
         portfolio_items = (
             Transaction.objects.filter(user=user_profile)
             .values('ticker')
-            .annotate(totalQuantity=Sum('quantity'), averagePrice=Avg('price')) 
+            .annotate(
+                totalQuantity=Sum(
+                    Case(
+                        When(transactionType='buy', then='quantity'),
+                        When(transactionType='sell', then=-F('quantity')),
+                        default=0,
+                        output_field=IntegerField()
+                    )
+                ),
+                averagePrice=Avg('price')
+            )
             .order_by('ticker')
         )
-        serializer = PortfolioSerializer(portfolio_items, many=True) 
-        return Response(serializer.data) 
-
+        serializer = PortfolioSerializer(portfolio_items, many=True)
+        return Response(serializer.data)
          
