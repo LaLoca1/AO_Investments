@@ -90,6 +90,8 @@ const StockPortfolio = () => {
         );
 
         setEditingItem(null);
+
+        setRefreshCounter((counter) => counter + 1);
       }
     } catch (error) {
       console.error("Error updating watchlist item:", error);
