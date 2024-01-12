@@ -3,12 +3,12 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Layout from "./hocs/Layout";
 
-import Home from "./containers/Home";
-import Register from "./containers/Register";
-import Login from "./containers/Login";
-import UserProfile from "./containers/UserProfile";
-import Dashboard from "./containers/Dashboard";
-import StockPortfolio from "./containers/StockPortfolio";
+import Home from "./containers/pages/Home";
+import Register from "./containers/pages/account/Register";
+import Login from "./containers/pages/account/Login";
+import UserProfile from "./containers/pages/account/UserProfile";
+import Dashboard from "./containers/pages/Dashboard";
+import StockPortfolio from "./containers/pages/StockPortfolio";
 
 import { Provider } from "react-redux";
 import store from "./store";

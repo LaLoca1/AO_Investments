@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { update_profile } from '../actions/profile';
-import { delete_account } from '../actions/auth';
+import { update_profile } from '../../../actions/profile';
+import { delete_account } from '../../../actions/auth';
 
 const UserProfile = ({
     delete_account,

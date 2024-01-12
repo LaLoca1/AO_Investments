@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { logout } from '../actions/auth';
+import { logout } from '../../actions/auth';
 
 const navbar = ({ isAuthenticated, logout }) => {
     const authLinks = (

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import CSRFToken from "../components/CSRFToken";
+import CSRFToken from "../../components/CSRFToken";
 
 const AddTransaction = ({ onItemAdded }) => {
   const [ticker, setTicker] = useState("");

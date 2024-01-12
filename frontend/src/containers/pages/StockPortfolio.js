@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import DisplayTransactions from "./DisplayTransactions";
-import AddTransaction from "./AddTransaction";
-import EditTransaction from "./EditTransaction";
-import DisplayPortfolio from "./DisplayPortfolio";
+import DisplayTransactions from "../StockTransactions/DisplayTransactions";
+import AddTransaction from "../StockTransactions/AddTransaction";
+import EditTransaction from "../StockTransactions/EditTransaction";
+import DisplayPortfolio from "../StockTransactions/DisplayPortfolio";
 
 const StockPortfolio = () => {
   const [watchlistItems, setWatchlistItems] = useState([]);

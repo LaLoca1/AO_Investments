@@ -1,39 +1,32 @@
 import React, { useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { register } from '../actions/auth';
-import CSRFToken from '../components/CSRFToken';
+import { login } from '../../../actions/auth';
+import CSRFToken from '../../../components/CSRFToken';
 
-const Register = ({ register, isAuthenticated }) => {
+const Login = ({ login, isAuthenticated }) => {
     const [formData, setFormData] = useState({
         username: '',
-        password: '',
-        re_password: ''
+        password: ''
     });
-    const [accountCreated, setAccountCreated] = useState(false);
 
-    const { username, password, re_password } = formData;
+    const { username, password } = formData;
 
     const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
     const onSubmit = e => {
         e.preventDefault();
 
-        if (password === re_password) {
-            register(username, password, re_password);
-            setAccountCreated(true);
-        }
+        login(username, password);
     };
 
     if (isAuthenticated)
-        return <Navigate to='/dashboard' />;
-    else if (accountCreated)
-        return <Navigate to='/login' />;
+        return <Navigate to='/dashboard'/>;
 
     return (
         <div className='container mt-5'>
-            <h1>Register for an Account</h1>
-            <p>Create an account with our Session Auth application</p>
+            <h1>Sign In</h1>
+            <p>Sign into your Session Auth account</p>
             <form onSubmit={e => onSubmit(e)}>
                 <CSRFToken />
                 <div className='form-group'>
@@ -61,23 +54,10 @@ const Register = ({ register, isAuthenticated }) => {
                         required
                     />
                 </div>
-                <div className='form-group'>
-                    <label className='form-label mt-3'>Confirm Password: </label>
-                    <input
-                        className='form-control'
-                        type='password'
-                        placeholder='Confirm Password*'
-                        name='re_password'
-                        onChange={e => onChange(e)}
-                        value={re_password}
-                        minLength='6'
-                        required
-                    />
-                </div>
-                <button className='btn btn-primary mt-3' type='submit'>Register</button>
+                <button className='btn btn-primary mt-3' type='submit'>Login</button>
             </form>
             <p className='mt-3'>
-                Already have an Account? <Link to='/login'>Sign In</Link>
+                Don't have an Account? <Link to='/register'>Sign Up</Link>
             </p>
         </div>
     );
@@ -87,4 +67,4 @@ const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated
 });
 
-export default connect(mapStateToProps, { register })(Register);
+export default connect(mapStateToProps, { login })(Login);
