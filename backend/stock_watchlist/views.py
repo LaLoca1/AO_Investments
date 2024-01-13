@@ -10,6 +10,7 @@ from .serializers import TransactionSerializer
 import requests 
 from django.conf import settings
 from decimal import Decimal
+from datetime import datetime, timedelta
 
 # Create your views here.
 
@@ -67,7 +68,76 @@ class EditTransactionView(APIView):
                 return Response({"detail": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response({"error": "You don't have permission to edit this transaction"}, status=status.HTTP_403_FORBIDDEN)
+            
+class PortfolioPerformanceView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def get_stock_time_series_weekly(self, ticker):
+        url = f"https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol={ticker}&apikey={settings.ALPHA_VANTAGE_API_KEY}"
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            time_series = data.get("Weekly Time Series", {})
+            return {date: float(info["4. close"]) for date, info in time_series.items()}
+        else:
+            return {}
+
+    def get_weekly_portfolio_value(self, user_profile, end_of_week, ticker_prices):
+        total_value = Decimal('0.0')
+        for ticker, prices in ticker_prices.items():
+            if not prices:
+                continue  # Skip this ticker if no price data is available
+
+            # Attempt to find the closest date's closing price
+            try:
+                closest_date = min(prices.keys(), key=lambda d: abs(datetime.strptime(d, '%Y-%m-%d') - end_of_week))
+                weekly_price = prices.get(closest_date)
+            except ValueError:
+                weekly_price = None  # No price data for this week
+
+            if weekly_price:
+                # Aggregate the quantity of the ticker up to the end of the week
+                quantity = Transaction.objects.filter(
+                    user=user_profile,
+                    ticker=ticker,
+                    trade_date__lte=end_of_week
+                ).aggregate(
+                    total_quantity=Sum(
+                        Case(
+                            When(transactionType='buy', then='quantity'),
+                            When(transactionType='sell', then=-F('quantity')),
+                            default=0,
+                            output_field=IntegerField()
+                        )
+                    )
+                )['total_quantity'] or 0
+
+                total_value += Decimal(weekly_price) * Decimal(quantity)
+
+        return total_value
+
+    def get(self, request):
+        user_profile = request.user.userprofile
+        tickers = Transaction.objects.filter(user=user_profile).values_list('ticker', flat=True).distinct()
+
+        ticker_prices = {ticker: self.get_stock_time_series_weekly(ticker) for ticker in tickers}
+
+        end_date = datetime.today()
+        start_date = end_date - timedelta(days=90) # Rolling period of 90 days
+
+        # Generate a list of end-of-week dates between start_date and end_date
+        weeks = [start_date + timedelta(days=(6 - start_date.weekday()) + i * 7) for i in range((end_date - start_date).days // 7 + 1)]
+
+        portfolio_values = []
+        for end_of_week in weeks:
+            weekly_value = self.get_weekly_portfolio_value(user_profile, end_of_week, ticker_prices)
+            portfolio_values.append({
+                'week': end_of_week.strftime('%Y-%m-%d'),
+                'totalValue': weekly_value
+            })
+
+        return Response(portfolio_values)
+    
 class PortfolioView(APIView):
     permission_classes = [IsAuthenticated]
 
