@@ -1,4 +1,5 @@
 import React from 'react'; 
+import PortfolioPerformanceChart from '../PortfolioPerformanceChart';
 
 const dashboard = () => (
     <div className='container'>

@@ -6,7 +6,10 @@ from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import get_object_or_404
 from rest_framework import status, generics
 from .models import Transaction
-from .serializers import TransactionSerializer, PortfolioSerializer
+from .serializers import TransactionSerializer
+import requests 
+from django.conf import settings
+from decimal import Decimal
 
 # Create your views here.
 
@@ -68,6 +71,16 @@ class EditTransactionView(APIView):
 class PortfolioView(APIView):
     permission_classes = [IsAuthenticated]
 
+    def get_current_stock_price(self, ticker):
+        url = f"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={ticker}&apikey={settings.ALPHA_VANTAGE_API_KEY}"
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            return float(data["Global Quote"]["05. price"])
+        else:
+            # Handle errors or use a default value/fallback strategy
+            return None
+
     def get(self, request):
         user_profile = request.user.userprofile
         portfolio_items = (
@@ -86,6 +99,24 @@ class PortfolioView(APIView):
             )
             .order_by('ticker')
         )
-        serializer = PortfolioSerializer(portfolio_items, many=True)
-        return Response(serializer.data)
+
+        portfolio_data = []
+        for item in portfolio_items:
+            current_price = self.get_current_stock_price(item['ticker'])
+            if current_price is not None:
+                total_investment = item['totalQuantity'] * item['averagePrice']
+                current_value = item['totalQuantity'] * current_price
+                profit_or_loss = Decimal(current_value) - total_investment
+
+                portfolio_data.append({
+                    'ticker': item['ticker'],
+                    'totalQuantity': item['totalQuantity'],
+                    'averagePrice': item['averagePrice'],
+                    'totalInvestment': total_investment,
+                    'currentValue': current_value,
+                    'profitOrLoss': profit_or_loss,
+                    'currentPrice': current_price
+                })
+
+        return Response(portfolio_data)
          
