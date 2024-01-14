@@ -1,72 +1,85 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
-    Chart as ChartJS,
-    ArcElement,
-    Tooltip,
-    Legend,
-    CategoryScale,
-    LinearScale
-  } from 'chart.js';
-  import { Pie } from 'react-chartjs-2';
-  
-  ChartJS.register(
-    ArcElement,
-    Tooltip,
-    Legend,
-    CategoryScale,
-    LinearScale
-  );
-  
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+} from 'chart.js';
+import { Pie } from 'react-chartjs-2';
+
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale
+);
+
+const generateColors = (count) => {
+  // Placeholder function for color generation
+  const colors = [];
+  for (let i = 0; i < count; i++) {
+    colors.push(`rgba(${255 - i * 20}, ${99 + i * 20}, ${132 + i * 10}, 0.6)`);
+  }
+  return colors;
+};
+
+const setupChartData = (data) => {
+  const backgroundColors = generateColors(data.length);
+  return {
+    labels: data.map((item) => item.sector),
+    datasets: [
+      {
+        label: "Sector Breakdown",
+        data: data.map((item) => item.total_investment),
+        backgroundColor: backgroundColors,
+        borderColor: backgroundColors.map(color => color.replace('0.6', '1')),
+        borderWidth: 1,
+      },
+    ],
+  };
+};
+
 const SectorBreakdownChart = () => {
-  const [chartData, setChartData] = useState({});
+  const [chartData, setChartData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/watchlist/api/user/sector-breakdown/"
-        );
-        console.log(response.data);
+        const response = await axios.get("/watchlist/api/user/sector-breakdown/");
         const data = response.data;
         if (data && Array.isArray(data)) {
-          setChartData({
-            labels: data.map((item) => item.sector),
-            datasets: [
-              {
-                label: "Sector Breakdown",
-                data: data.map((item) => item.total_investment),
-                backgroundColor: [
-                  "rgba(255, 99, 132, 0.6)",
-                  "rgba(54, 162, 235, 0.6)",
-                  "rgba(255, 206, 86, 0.6)",
-                  // ... add more colors if you have more sectors
-                ],
-                borderColor: [
-                  "rgba(255, 99, 132, 1)",
-                  "rgba(54, 162, 235, 1)",
-                  "rgba(255, 206, 86, 1)",
-                  // ... repeat for each sector
-                ],
-                borderWidth: 1,
-              },
-            ],
-          });
+          setChartData(setupChartData(data));
         } else {
-          console.error("Data is not an array:", data);
+          throw new Error("Data is not an array or is empty");
         }
-      } catch (error) {
-        console.error("Error fetching sector data:", error);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
-  return chartData && Object.keys(chartData).length > 0 ? (
-    <Pie data={chartData} />
-  ) : (
-    <div>Loading...</div>
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  return (
+    <div style={{ width: '400px', height: '400px' }}>
+      {chartData ? <Pie data={chartData} /> : <div>No data available</div>}
+    </div>
   );
 };
 
