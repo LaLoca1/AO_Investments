@@ -119,4 +119,16 @@ class PortfolioView(APIView):
                 })
 
         return Response(portfolio_data)
-         
+
+class SectorBreakdownView(APIView):
+    permission_classes = [IsAuthenticated] 
+
+    def get(self, request):
+        user_profile = request.user.userprofile
+
+        sector_data = Transaction.objects.filter(user=user_profile) \
+            .values('sector') \
+            .annotate(total_investment=Sum(F('price') * F('quantity'))) \
+            .order_by('-total_investment')
+
+        return Response(list(sector_data))
