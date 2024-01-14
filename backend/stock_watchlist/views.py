@@ -132,3 +132,16 @@ class SectorBreakdownView(APIView):
             .order_by('-total_investment')
 
         return Response(list(sector_data))
+    
+class StockQuantityView(APIView): 
+    permission_classes = [IsAuthenticated] 
+
+    def get(self, request):
+        user_profile = request.user.userprofile 
+
+        stock_data = Transaction.objects.filter(user=user_profile) \
+            .values('ticker') \
+            .annotate(total_quantity=Sum('quantity')) \
+            .order_by('-total_quantity')
+        
+        return Response(list(stock_data)) 

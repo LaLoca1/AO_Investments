@@ -24,11 +24,11 @@ const generateColors = (count) => {
 const setupChartData = (data) => {
   const backgroundColors = generateColors(data.length);
   return {
-    labels: data.map((item) => item.sector),
+    labels: data.map((item) => item.ticker), // Changed to ticker
     datasets: [
       {
-        label: "Sector Breakdown",
-        data: data.map((item) => item.total_investment),
+        label: "Stock Quantities",
+        data: data.map((item) => item.total_quantity), // Changed to total_quantity
         backgroundColor: backgroundColors,
         borderColor: backgroundColors.map((color) => color.replace("0.6", "1")),
         borderWidth: 1,
@@ -37,7 +37,7 @@ const setupChartData = (data) => {
   };
 };
 
-const SectorBreakdownChart = () => {
+const StockQuantityChart = () => { // Component name changed
   const [chartData, setChartData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,9 +45,7 @@ const SectorBreakdownChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "/watchlist/api/user/sector-breakdown/"
-        );
+        const response = await axios.get("/watchlist/api/user/stock-quantity-breakdown/"); // Endpoint changed
         const data = response.data;
         if (data && Array.isArray(data)) {
           setChartData(setupChartData(data));
@@ -68,7 +66,7 @@ const SectorBreakdownChart = () => {
     plugins: {
       title: {
         display: true,
-        text: "Sector Breakdown",
+        text: "Stock Quantities",
         font: {
           size: 18,
         },
@@ -79,6 +77,7 @@ const SectorBreakdownChart = () => {
       },
     },
   };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -89,12 +88,12 @@ const SectorBreakdownChart = () => {
 
   return (
     <div>
-      <h2 style={{ textAlign: "center" }}>Sector Breakdown</h2>{" "}
+      <h2 style={{ textAlign: "center" }}>Stock Quantities</h2>
       <div style={{ width: "400px", height: "400px", margin: "auto" }}>
-        {chartData ? <Pie data={chartData} /> : <div>No data available</div>}
+        {chartData ? <Pie data={chartData} options={chartOptions} /> : <div>No data available</div>}
       </div>
     </div>
   );
 };
 
-export default SectorBreakdownChart;
+export default StockQuantityChart;
