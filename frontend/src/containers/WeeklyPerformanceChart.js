@@ -9,6 +9,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  TimeScale,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
@@ -17,12 +18,13 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
+  TimeScale,
   Title,
   Tooltip,
   Legend
 );
 
-const PortfolioPerformanceChart = () => {
+const WeeklyPortfolioPerformanceChart = () => {
   const [chartData, setChartData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,7 +32,7 @@ const PortfolioPerformanceChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("watchlist/api/user/portfolio-performance/");
+        const response = await axios.get("watchlist/api/user/weekly-portfolio-performance/"); // Update with your actual endpoint
         const data = response.data;
         setChartData({
           labels: data.map(item => item.week),
@@ -64,10 +66,10 @@ const PortfolioPerformanceChart = () => {
 
   return (
     <div style={{ width: "600px", height: "400px", margin: "auto" }}>
-      <h2 style={{ textAlign: "center" }}>Overall Portfolio Value</h2>
+      <h2 style={{ textAlign: "center" }}>Weekly Portfolio Performance</h2>
       <Line data={chartData} />
     </div>
   );
 };
 
-export default PortfolioPerformanceChart;
+export default WeeklyPortfolioPerformanceChart;
