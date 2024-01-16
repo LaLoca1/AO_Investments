@@ -1,18 +1,22 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from django.db.models import Sum, Avg, Case, When, Sum, F, IntegerField
-from django.db.models.functions import TruncWeek
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view, permission_classes
-from django.shortcuts import get_object_or_404
-from rest_framework import status, generics
+import requests 
+
 from .models import Transaction
 from .serializers import TransactionSerializer
-import requests 
-from django.conf import settings
+
 from decimal import Decimal
 from datetime import datetime, timedelta
 from collections import defaultdict, OrderedDict
+
+from django.db.models import Sum, Avg, Case, When, Sum, F, IntegerField
+from django.db.models.functions import TruncWeek
+from django.shortcuts import get_object_or_404
+from django.conf import settings
+
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, generics
 
 # Create your views here.
 
@@ -71,16 +75,126 @@ class EditTransactionView(APIView):
             else:
                 return Response({"error": "You don't have permission to edit this transaction"}, status=status.HTTP_403_FORBIDDEN)
 
-def get_historical_data(ticker, api_key):
-    params = {
-        "function": "TIME_SERIES_WEEKLY",
-        "symbol": ticker,
-        "apikey": api_key
-    }
-    response = requests.get("https://www.alphavantage.co/query", params=params)
-    data = response.json()
-    return data.get("Weekly Time Series", {})
+# A python class that inherits from APIView            
+class SectorBreakdownView(APIView):
+    # Sets the permission_classes attribute of SectorBreakdownView to [IsAuthenticated]
+    # Means that only authenticated users (users who have valid session) can access this view
+    
+    permission_classes = [IsAuthenticated] 
+    
+    # Defines a get method for the class, called when a get request is made to endpoint associated with this view
+    # self is used to refer to the instance of a class within class itself. self represents the instance of class SectorbreakdownView
+    # allows you to have access to attributes and methods of the class within the method
+    # self refers to the view object itself. Its a way for the view to talk about itself and access its own properties and functions
+    # Request is a parameter that represents the HTTP request made to the view
+    
+    def get(self, request):
+        # This line retrieves the userprofile associated with the user making the request
+        # Assumption here is that there is a one-to-one relationship between Django built in User model 
+        # and a custom UserProfile model, and this line detches the user's profile. 
+        
+        user_profile = request.user.userprofile
 
+        # This is a queryset that represents a query to the database
+        # First line queries the database to retrieve transaction data related to user_profile.
+        # Filters the transaction model based on the user field matching the user_profile
+        # 2nd line further specifies that we want to retrieve values of sector field from filtered transactions.
+        # It will group results by sector 
+        # 3rd line annotates the queryset by adding a new field 'total_investment'. This calculates total investment in each sector
+        # 4th line orders the annotated queryset in descending order based on total_investment field. Means highest total investment 
+        # will appear first in the result. 
+        sector_data = Transaction.objects.filter(user=user_profile) \
+            .values('sector') \
+            .annotate(total_investment=Sum(F('price') * F('quantity'))) \
+            .order_by('-total_investment')
+
+        # Converts the queryset sector_data into a list and sends it as a response
+        # Would look something like this 
+        #[ {"sector": "Technology", "total_investment": 50000.0},.....]
+        return Response(list(sector_data))
+    
+class StockQuantityView(APIView): 
+    permission_classes = [IsAuthenticated] 
+
+    def get(self, request):
+        user_profile = request.user.userprofile 
+
+        stock_data = Transaction.objects.filter(user=user_profile) \
+            .values('ticker') \
+            .annotate(total_quantity=Sum('quantity')) \
+            .order_by('-total_quantity')
+        
+        return Response(list(stock_data)) 
+    
+class PortfolioView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    # takes 2 parameters 'self' which is a ref to instance of the class, and 'ticker' which is the stock 
+    # ticker symbol for which you want to fetch the price. 
+    def get_current_stock_price(self, ticker):
+        # This URL is formed to request global quote data for the specified stock symbol
+        url = f"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={ticker}&apikey={settings.ALPHA_VANTAGE_API_KEY}"
+        # Sends an HTTP GET request to the URL using requests library. Returns response object that contains server's response 
+        # including HTTP status code, headers and content. 
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            return float(data["Global Quote"]["05. price"])
+        else:
+            # Handle errors or use a default value/fallback strategy
+            return None
+
+    def get(self, request):
+        user_profile = request.user.userprofile
+        # Retrieves the user's portfolio data from the database using a queryset. Aggregates data related to stock transactions 
+        # It filters the "Transaction" model to include only transactions associated with the 'user_profile'
+        # It groups the data by the 'ticker' field. 
+        # It calculates the 'totalQuantity' of stocks based on transaction types (buy and sell) 
+        # It calculates the 'averagePrice' of the stocks.
+        portfolio_items = (
+            Transaction.objects.filter(user=user_profile)
+            .values('ticker')
+            .annotate(
+                totalQuantity=Sum(
+                    Case(
+                        When(transactionType='buy', then='quantity'),
+                        When(transactionType='sell', then=-F('quantity')),
+                        default=0,
+                        output_field=IntegerField()
+                    )
+                ),
+                averagePrice=Avg('price')
+            )
+            .order_by('ticker')
+        )
+
+        # Prepares the data the be returned as the APi response, iterates over the 'portfolio_items' queryset,and for each item: 
+        # Fetches the current stock price using the 'get_current_stock_price' method 
+        # Calulates the total investment, current value, and profit or loss for each stock based on the fetched data 
+        # It appends the computed data to the 'portfolio_data' list as a dictionary. 
+        
+        # Initializes empty list which will be used to store dictionaries containing financial metrics for each stock in portfolio
+        portfolio_data = []
+        # Iterates through each item (each stock) in portfolio_items queryset
+        for item in portfolio_items:
+            current_price = self.get_current_stock_price(item['ticker'])
+            if current_price is not None:
+                total_investment = item['totalQuantity'] * item['averagePrice']
+                current_value = item['totalQuantity'] * current_price
+                profit_or_loss = Decimal(current_value) - total_investment
+
+                portfolio_data.append({
+                    'ticker': item['ticker'],
+                    'totalQuantity': item['totalQuantity'],
+                    'averagePrice': item['averagePrice'],
+                    'totalInvestment': total_investment,
+                    'currentValue': current_value,
+                    'profitOrLoss': profit_or_loss,
+                    'currentPrice': current_price
+                })
+        # This line sends the 'portflio_data' list as a JSON response to the client making the get request
+        return Response(portfolio_data)
+    
 def get_daily_historical_data(ticker, api_key):
     params = {
         "function": "TIME_SERIES_DAILY",
@@ -90,6 +204,16 @@ def get_daily_historical_data(ticker, api_key):
     response = requests.get("https://www.alphavantage.co/query", params=params)
     data = response.json()
     return data.get("Time Series (Daily)", {})
+
+def get_weekly_historical_data(ticker, api_key):
+    params = {
+        "function": "TIME_SERIES_WEEKLY",
+        "symbol": ticker,
+        "apikey": api_key
+    }
+    response = requests.get("https://www.alphavantage.co/query", params=params)
+    data = response.json()
+    return data.get("Weekly Time Series", {})
 
 def get_stock_quantity(user_profile, ticker, date):
     # Fetch all transactions for the given user and ticker up to the specified date
@@ -111,131 +235,7 @@ def get_stock_quantity(user_profile, ticker, date):
 
     return max(quantity, 0)  # Ensure the quantity doesn't go below zero
 
-
-class WeeklyPortfolioPerformanceView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        user_profile = request.user.userprofile
-        api_key = settings.ALPHA_VANTAGE_API_KEY  # Ideally, this should be in your settings or environment variables
-        
-        # Define the date range for the last 12 weeks 
-        end_date = datetime.today().date() 
-        start_date = end_date - timedelta(weeks=12) 
-
-        # Fetch unique tickers from the user's transactions
-        tickers = Transaction.objects.filter(user=user_profile).values_list('ticker', flat=True).distinct()
-        # Initialize a structure to hold weekly performance data
-        weekly_performance = defaultdict(float)
-
-        for ticker in tickers:
-            historical_data = get_historical_data(ticker, api_key)
-
-            # Process only data within the last 12 weeks
-            for date_str, data in historical_data.items():
-                date = datetime.strptime(date_str, "%Y-%m-%d").date()
-                if start_date <= date <= end_date:
-                    weekly_close_price = float(data['4. close'])
-                    stock_quantity = get_stock_quantity(user_profile, ticker, date)
-                    weekly_performance[date] += stock_quantity * weekly_close_price
-
-        # Format and sort the performance data
-        formatted_performance = [{"week": date.strftime("%Y-%m-%d"), "total_value": value} for date, value in weekly_performance.items()]
-        return Response(sorted(formatted_performance, key=lambda x: x['week']))
-
-class DailyPortfolioPerformanceView(APIView):
-    permission_classes = [IsAuthenticated] 
-
-    def get(self, request):
-        user_profile = request.user.userprofile 
-        api_key = settings.ALPHA_VANTAGE_API_KEY
-
-        # Define the date range for the last 30 days 
-        end_date = datetime.today().date() 
-        start_date = end_date - timedelta(days=30) 
-
-        tickers = Transaction.objects.filter(user=user_profile).values_list('ticker', flat=True).distinct() 
-        daily_performance = OrderedDict() 
-
-        for ticker in tickers:
-            historical_data = get_daily_historical_data(ticker, api_key) 
-
-            # Process data within the last 30 days 
-            for date_str, data in historical_data.items():
-                date = datetime.strptime(date_str, "%Y-%m-%d").date()
-                if start_date <= date <= end_date:
-                    daily_close_price = float(data['4. close']) 
-                    stock_quantity = get_stock_quantity(user_profile, ticker, date) 
-                    daily_performance[date] = daily_performance.get(date, 0) + stock_quantity * daily_close_price
-
-        formatted_performance = []
-        previous_day_value = None
-        for date, total_value in daily_performance.items():
-            if previous_day_value is not None and previous_day_value != 0:
-                percentage_return = ((total_value - previous_day_value) / previous_day_value) * 100
-            else:
-                percentage_return = None  # No return for the first day or if previous day's value is zero
-            formatted_performance.append({
-                "day": date.strftime("%Y-%m-%d"), 
-                "total_value": total_value, 
-                "percentage_return": percentage_return
-            })
-            previous_day_value = total_value
-
-        return Response(formatted_performance)
     
-class PortfolioView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get_current_stock_price(self, ticker):
-        url = f"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={ticker}&apikey={settings.ALPHA_VANTAGE_API_KEY}"
-        response = requests.get(url)
-        if response.status_code == 200:
-            data = response.json()
-            return float(data["Global Quote"]["05. price"])
-        else:
-            # Handle errors or use a default value/fallback strategy
-            return None
-
-    def get(self, request):
-        user_profile = request.user.userprofile
-        portfolio_items = (
-            Transaction.objects.filter(user=user_profile)
-            .values('ticker')
-            .annotate(
-                totalQuantity=Sum(
-                    Case(
-                        When(transactionType='buy', then='quantity'),
-                        When(transactionType='sell', then=-F('quantity')),
-                        default=0,
-                        output_field=IntegerField()
-                    )
-                ),
-                averagePrice=Avg('price')
-            )
-            .order_by('ticker')
-        )
-
-        portfolio_data = []
-        for item in portfolio_items:
-            current_price = self.get_current_stock_price(item['ticker'])
-            if current_price is not None:
-                total_investment = item['totalQuantity'] * item['averagePrice']
-                current_value = item['totalQuantity'] * current_price
-                profit_or_loss = Decimal(current_value) - total_investment
-
-                portfolio_data.append({
-                    'ticker': item['ticker'],
-                    'totalQuantity': item['totalQuantity'],
-                    'averagePrice': item['averagePrice'],
-                    'totalInvestment': total_investment,
-                    'currentValue': current_value,
-                    'profitOrLoss': profit_or_loss,
-                    'currentPrice': current_price
-                })
-
-        return Response(portfolio_data)
-
 class PortfolioPerformanceView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -258,30 +258,83 @@ class PortfolioPerformanceView(APIView):
         ]
 
         return Response(portfolio_performance_data)
-            
-class SectorBreakdownView(APIView):
-    permission_classes = [IsAuthenticated] 
 
-    def get(self, request):
-        user_profile = request.user.userprofile
-
-        sector_data = Transaction.objects.filter(user=user_profile) \
-            .values('sector') \
-            .annotate(total_investment=Sum(F('price') * F('quantity'))) \
-            .order_by('-total_investment')
-
-        return Response(list(sector_data))
-    
-class StockQuantityView(APIView): 
+class DailyPortfolioPerformanceView(APIView):
     permission_classes = [IsAuthenticated] 
 
     def get(self, request):
         user_profile = request.user.userprofile 
+        api_key = settings.ALPHA_VANTAGE_API_KEY
 
-        stock_data = Transaction.objects.filter(user=user_profile) \
-            .values('ticker') \
-            .annotate(total_quantity=Sum('quantity')) \
-            .order_by('-total_quantity')
+        # Define the date range for the last 30 days 
+        end_date = datetime.today().date() 
+        start_date = end_date - timedelta(days=30) 
+
+        # A queryset taht retrieves a distinct list of stock tickers from the Transaction model for user. Used to fetch historical data for each stock
+        tickers = Transaction.objects.filter(user=user_profile).values_list('ticker', flat=True).distinct() 
+        # Initializes an ordered dictionary, stores daily performance data. Used to calculate and organize daily portfolio values
+        daily_performance = OrderedDict() 
+
+        # Loops over list of tickers and gets daily historical data
+        for ticker in tickers:
+            historical_data = get_daily_historical_data(ticker, api_key) 
+
+            # Process data within the last 30 days 
+            # extracts daily closing price of stock from historical data 
+            # calculates quantity of stock held by user 
+            # calculates daily portflio value for that date and stores it in daily_performance
+            for date_str, data in historical_data.items():
+                date = datetime.strptime(date_str, "%Y-%m-%d").date()
+                if start_date <= date <= end_date:
+                    daily_close_price = float(data['4. close']) 
+                    stock_quantity = get_stock_quantity(user_profile, ticker, date) 
+                    daily_performance[date] = daily_performance.get(date, 0) + stock_quantity * daily_close_price
+
+        formatted_performance = []
+        previous_day_value = None
+        for date, total_value in daily_performance.items():
+            if previous_day_value is not None and previous_day_value != 0:
+                percentage_return = ((total_value - previous_day_value) / previous_day_value) * 100
+            else:
+                percentage_return = None  # No return for the first day or if previous day's value is zero
+            formatted_performance.append({
+                "day": date.strftime("%Y-%m-%d"), 
+                "total_value": total_value, 
+                "percentage_return": percentage_return
+            })
+            previous_day_value = total_value
+
+        return Response(formatted_performance)
+
+class WeeklyPortfolioPerformanceView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_profile = request.user.userprofile
+        api_key = settings.ALPHA_VANTAGE_API_KEY  # Ideally, this should be in your settings or environment variables
         
-        return Response(list(stock_data)) 
+        # Define the date range for the last 12 weeks 
+        end_date = datetime.today().date() 
+        start_date = end_date - timedelta(weeks=12) 
+
+        # Fetch unique tickers from the user's transactions
+        tickers = Transaction.objects.filter(user=user_profile).values_list('ticker', flat=True).distinct()
+        # Initialize a structure to hold weekly performance data
+        weekly_performance = defaultdict(float)
+
+        for ticker in tickers:
+            historical_data = get_weekly_historical_data(ticker, api_key)
+
+            # Process only data within the last 12 weeks
+            for date_str, data in historical_data.items():
+                date = datetime.strptime(date_str, "%Y-%m-%d").date()
+                if start_date <= date <= end_date:
+                    weekly_close_price = float(data['4. close'])
+                    stock_quantity = get_stock_quantity(user_profile, ticker, date)
+                    weekly_performance[date] += stock_quantity * weekly_close_price
+
+        # Format and sort the performance data
+        formatted_performance = [{"week": date.strftime("%Y-%m-%d"), "total_value": value} for date, value in weekly_performance.items()]
+        return Response(sorted(formatted_performance, key=lambda x: x['week']))
+
     

@@ -10,8 +10,15 @@ import {
 } from "chart.js";
 import { Pie } from "react-chartjs-2";
 
+// Arcelement - renders slices in pie 
+// Tooltip - when user hovers, provides additional ingo about data point
+// Legend - Displays a box that provides labels and colours corresponding to different data sets 
+// CategoryScale - Used for categorical data. In pie chart, helps label and categorize each segment of chart 
+// LinearScale - Scale type used for linear data. 
+
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale);
 
+// Used to generate an array of RGBA color strings. Used for styling sectors in pie chart
 const generateColors = (count) => {
   // Placeholder function for color generation
   const colors = [];
@@ -21,6 +28,8 @@ const generateColors = (count) => {
   return colors;
 };
 
+// Takes an array of sector data and formats it into structure required for pie chart 
+// Extracts labels (sector names) and data (total investments) from input data and assigns colors to each sector 
 const setupChartData = (data) => {
   const backgroundColors = generateColors(data.length);
   return {
@@ -36,6 +45,7 @@ const setupChartData = (data) => {
     ],
   };
 };
+
 
 const SectorBreakdownChart = () => {
   const [chartData, setChartData] = useState(null);
@@ -91,7 +101,7 @@ const SectorBreakdownChart = () => {
     <div>
       <h2 style={{ textAlign: "center" }}>Sector Breakdown</h2>{" "}
       <div style={{ width: "400px", height: "400px", margin: "auto" }}>
-        {chartData ? <Pie data={chartData} /> : <div>No data available</div>}
+        {chartData ? <Pie data={chartData} options={chartOptions} /> : <div>No data available</div>}
       </div>
     </div>
   );

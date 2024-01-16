@@ -71,8 +71,6 @@ class Transaction(models.Model):
     # this is a 'save' method of a django model class, it is called automatically when an instance of the model is saved in database
     def save(self, *args, **kwargs):
         if not self.pk: # Checking if it's a new instance
-            self.trade_date = default_trade_date(self.market) 
-
             if self.transactionType == 'sell':
                 self.apply_fifo() 
                 # This ensures that the quantity sold is deducted from earliest bought stocks (based on trade date) first
