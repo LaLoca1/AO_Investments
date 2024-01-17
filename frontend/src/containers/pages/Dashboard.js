@@ -4,6 +4,7 @@ import StockQuantityChart from '../StockQuantityChart';
 import PortfolioPerformanceChart from '../PortfolioPerformanceChart';
 import WeeklyPortfolioPerformanceChart from '../WeeklyPerformanceChart';
 import DailyPerformanceChart from '../DailyPerformanceChart';
+import PortfolioPeriodPerformanceChart from '../PortfolioPeriodPerformanceChart';
 
 const dashboard = () => (
     <div className='container'>
@@ -11,6 +12,7 @@ const dashboard = () => (
             <SectorBreakdownChart/>
             <StockQuantityChart/> 
             <PortfolioPerformanceChart/>
+            <PortfolioPeriodPerformanceChart/>
             <WeeklyPortfolioPerformanceChart/>
             <DailyPerformanceChart/>
         </div>

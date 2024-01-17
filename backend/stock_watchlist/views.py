@@ -258,6 +258,37 @@ class PortfolioPerformanceView(APIView):
         ]
 
         return Response(portfolio_performance_data)
+    
+class PortfolioPerformancePeriodView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_profile = request.user.userprofile 
+
+        # Group transactions by week and calculate total value
+        weekly_data = Transaction.objects.filter(user=user_profile) \
+            .annotate(week=TruncWeek('trade_date')) \
+            .values('week') \
+            .annotate(total_value=Sum(F('price') * F('quantity'))) \
+            .order_by('week')
+
+        # Calculate holding period return
+        portfolio_performance_data = []
+        previous_week_value = None
+        for week in weekly_data:
+            current_week_value = week['total_value']
+
+            if previous_week_value is not None and previous_week_value != 0:
+                # Calculate HPR
+                hpr = ((current_week_value - previous_week_value) / previous_week_value) * 100
+                portfolio_performance_data.append({
+                    'week': week['week'].strftime("%Y-%m-%d"),
+                    'holding_period_return': hpr
+                })
+
+            previous_week_value = current_week_value
+
+        return Response(portfolio_performance_data)
 
 class DailyPortfolioPerformanceView(APIView):
     permission_classes = [IsAuthenticated] 
@@ -290,19 +321,10 @@ class DailyPortfolioPerformanceView(APIView):
                     stock_quantity = get_stock_quantity(user_profile, ticker, date) 
                     daily_performance[date] = daily_performance.get(date, 0) + stock_quantity * daily_close_price
 
-        formatted_performance = []
-        previous_day_value = None
-        for date, total_value in daily_performance.items():
-            if previous_day_value is not None and previous_day_value != 0:
-                percentage_return = ((total_value - previous_day_value) / previous_day_value) * 100
-            else:
-                percentage_return = None  # No return for the first day or if previous day's value is zero
-            formatted_performance.append({
-                "day": date.strftime("%Y-%m-%d"), 
-                "total_value": total_value, 
-                "percentage_return": percentage_return
-            })
-            previous_day_value = total_value
+        formatted_performance = [{
+            "day": date.strftime("%Y-%m-%d"),
+            "total_value": total_value
+        } for date, total_value in daily_performance.items()]
 
         return Response(formatted_performance)
 

@@ -9,7 +9,6 @@ import {
   Title,
   Tooltip,
   Legend,
-  TimeScale,
 } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import { Line } from 'react-chartjs-2';
@@ -19,7 +18,6 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
-  TimeScale,
   Title,
   Tooltip,
   Legend,

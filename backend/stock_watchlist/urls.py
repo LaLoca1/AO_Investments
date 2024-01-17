@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import TransactionList, DailyPortfolioPerformanceView,WeeklyPortfolioPerformanceView, PortfolioPerformanceView, PortfolioView, SectorBreakdownView, StockQuantityView, CreateTransactionView, DeleteTransactionView, EditTransactionView, user_transaction_items
+from .views import TransactionList, PortfolioPerformancePeriodView, DailyPortfolioPerformanceView,WeeklyPortfolioPerformanceView, PortfolioPerformanceView, PortfolioView, SectorBreakdownView, StockQuantityView, CreateTransactionView, DeleteTransactionView, EditTransactionView, user_transaction_items
 
 urlpatterns = [
     path('api/transaction-items/', TransactionList.as_view(), name='transaction-list'),
@@ -8,6 +8,7 @@ urlpatterns = [
     path('api/edit-transaction-item/<int:pk>/', EditTransactionView.as_view(), name='edit-transaction'), 
     path('api/user/portfolio/', PortfolioView.as_view(), name='user-portfolio'), 
     path('api/user/portfolio-performance/', PortfolioPerformanceView.as_view(), name='user-portfolio-performance'),
+    path('api/user/portfolio-performance-period/', PortfolioPerformancePeriodView.as_view(), name='user-portfolio-performance-period'),
     path('api/user/weekly-portfolio-performance/', WeeklyPortfolioPerformanceView.as_view(), name='user-weekly-portfolio-performance'),
     path('api/user/daily-portfolio-performance/', DailyPortfolioPerformanceView.as_view(), name='user-daily-portfolio-performance'),
     path('api/user/sector-breakdown/', SectorBreakdownView.as_view(), name='sector-breakdown'), 
