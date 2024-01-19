@@ -1,0 +1,30 @@
+/* Dashboard.css */
+
+.dashboard-wrapper {
+    background-color: #f4f7fa; /* A light gray background */
+    border-radius: 0.5rem; /* Rounded corners */
+    padding: 2rem; /* Spacing around the content */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+  }
+  
+  .chart-container {
+    background-color: #ffffff; /* White background for the charts */
+    border-radius: 0.5rem; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow for each chart container */
+    margin: 1rem; /* Margin around each chart container */
+    padding: 1rem; /* Padding inside each chart container */
+    transition: transform 0.2s; /* Smooth transition for hover effect */
+  }
+  
+  .chart-container:hover {
+    transform: translateY(-0.25rem); /* Slight raise effect on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Increased shadow on hover */
+  }
+  
+  /* Responsive design adjustments for larger screens */
+  @media (min-width: 768px) {
+    .chart-container {
+      padding: 1.5rem; /* Increased padding for larger screens */
+    }
+  }
+  
