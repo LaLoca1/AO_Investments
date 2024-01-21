@@ -2,8 +2,9 @@ import React, { Fragment } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { logout } from '../../actions/auth';
+import './Sidebar.css'; // Import your CSS file for sidebar styles
 
-const navbar = ({ isAuthenticated, logout }) => {
+const Sidebar = ({ isAuthenticated, logout }) => {
     const authLinks = (
         <Fragment>
             <li className='nav-item'>
@@ -30,26 +31,13 @@ const navbar = ({ isAuthenticated, logout }) => {
     );
 
     return (
-        <nav className='navbar navbar-expand-lg navbar-light bg-light'>
-            <div className='container-fluid'>
+        <nav className='sidebar'>
+            <div className='sidebar-header'>
                 <Link className='navbar-brand' exact to='/'>AO Investments</Link>
-                <button 
-                    className='navbar-toggler' 
-                    type='button' 
-                    data-bs-toggle='collapse' 
-                    data-bs-target='#navbarNav' 
-                    aria-controls='navbarNav' 
-                    aria-expanded='false' 
-                    aria-label='Toggle navigation'
-                >
-                    <span className='navbar-toggler-icon'></span>
-                </button>
-                <div className='collapse navbar-collapse' id='navbarNav'>
-                    <ul className='navbar-nav'>
-                        { isAuthenticated ? authLinks : guestLinks }
-                    </ul>
-                </div>
             </div>
+            <ul className='nav flex-column'>
+                { isAuthenticated ? authLinks : guestLinks }
+            </ul>
         </nav>
     );
 };
@@ -58,4 +46,4 @@ const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated
 });
 
-export default connect(mapStateToProps, { logout })(navbar);
+export default connect(mapStateToProps, { logout })(Sidebar);

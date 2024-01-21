@@ -63,7 +63,7 @@ const PortfolioPeriodPerformanceChart = () => {
   }
 
   return (
-    <div style={{ width: "600px", height: "400px", margin: "auto" }}>
+    <div style={{ width: "500px", height: "400px", margin: "auto" }}>
       <h2 style={{ textAlign: "center" }}>Weekly Holding Period Return</h2>
       <Line data={chartData} />
     </div>

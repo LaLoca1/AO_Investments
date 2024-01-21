@@ -5,6 +5,8 @@ import DisplayTransactions from "../StockTransactions/DisplayTransactions";
 import AddTransaction from "../StockTransactions/AddTransaction";
 import EditTransaction from "../StockTransactions/EditTransaction";
 import DisplayPortfolio from "../StockTransactions/DisplayPortfolio";
+import Modal from "../StockTransactions/Modal";
+import "./StockPortfolio.css";
 
 const StockPortfolio = () => {
   const [watchlistItems, setWatchlistItems] = useState([]);
@@ -13,6 +15,8 @@ const StockPortfolio = () => {
   const [editingItem, setEditingItem] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [refreshCounter, setRefreshCounter] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // Fetch watchlist items on component mount
   useEffect(() => {
@@ -22,7 +26,9 @@ const StockPortfolio = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("/watchlist/api/user/transaction-items/");
+      const response = await axios.get(
+        "/watchlist/api/user/transaction-items/"
+      );
       setWatchlistItems(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -32,7 +38,7 @@ const StockPortfolio = () => {
   };
 
   const refreshData = () => {
-    setRefreshCounter(c => c + 1);
+    setRefreshCounter((c) => c + 1);
     fetchData();
   };
 
@@ -55,7 +61,8 @@ const StockPortfolio = () => {
       if (response.status === 201) {
         // Update the watchlist items state here
         fetchData();
-        refreshData(); 
+        setIsModalOpen(false);
+        refreshData();
       }
     } catch (error) {
       console.error("Error adding watchlist item:", error);
@@ -64,7 +71,9 @@ const StockPortfolio = () => {
 
   const handleEdit = (item) => {
     setEditingItem(item);
+    setIsEditModalOpen(true);
   };
+  
 
   const handleSaveEdit = async (editedItem) => {
     const config = {
@@ -90,7 +99,6 @@ const StockPortfolio = () => {
         );
 
         setEditingItem(null);
-
         setRefreshCounter((counter) => counter + 1);
       }
     } catch (error) {
@@ -100,7 +108,9 @@ const StockPortfolio = () => {
 
   const handleCancelEdit = () => {
     setEditingItem(null);
+    setIsEditModalOpen(false);
   };
+  
 
   const handleDelete = async (id) => {
     // Add a confirmation dialog before deletion
@@ -120,10 +130,13 @@ const StockPortfolio = () => {
     };
 
     try {
-      await axios.delete(`/watchlist/api/delete-transaction-item/${id}/`, config);
+      await axios.delete(
+        `/watchlist/api/delete-transaction-item/${id}/`,
+        config
+      );
       // Refresh the watchlist after deletion
       fetchData();
-      refreshData(); 
+      refreshData();
     } catch (error) {
       console.error("Error deleting watchlist item:", error);
     }
@@ -136,24 +149,39 @@ const StockPortfolio = () => {
     : watchlistItems;
 
   return (
-    <div>
-      <DisplayPortfolio key={refreshCounter} />
-      <button onClick={() => setShowAddForm(!showAddForm)}>Add Item</button>
-      {showAddForm && <AddTransaction onItemAdded={handleAddItem} />}
-      <DisplayTransactions
-        items={filteredItems}
-        filter={filter}
-        setFilter={setFilter}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
-      {editingItem && (
-        <EditTransaction
-          item={editingItem}
-          onSave={handleSaveEdit}
-          onCancel={handleCancelEdit}
-        />
-      )}
+    <div className="centered-container">
+      <div className="stock-portfolio-container">
+        <div className="portfolio-summary">
+          <DisplayPortfolio key={refreshCounter} />
+        </div>
+        <button
+          className="add-item-button"
+          onClick={() => setIsModalOpen(true)}
+        >
+          Add Item
+        </button>
+
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+          <AddTransaction onItemAdded={handleAddItem} />
+        </Modal>
+
+        <div className="transactions-container">
+          <DisplayTransactions
+            items={filteredItems}
+            filter={filter}
+            setFilter={setFilter}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        </div>
+        <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
+          <EditTransaction
+            item={editingItem}
+            onSave={handleSaveEdit}
+            onCancel={handleCancelEdit}
+          />
+        </Modal>
+      </div>
     </div>
   );
 };

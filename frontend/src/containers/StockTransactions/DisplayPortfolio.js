@@ -13,7 +13,7 @@ const DisplayPortfolio = () => {
     try {
       setLoading(true);
       const response = await axios.get("/watchlist/api/user/portfolio/");
-      setPortfolio(response.data); // Assuming this is already aggregated data
+      setPortfolio(response.data);
     } catch (error) {
       console.error("Error fetching portfolio data:", error);
     } finally {
@@ -23,12 +23,12 @@ const DisplayPortfolio = () => {
 
   return (
     <div>
-      <h1>User Portfolio</h1>
+      <h1>Stock Portfolio</h1>
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <table>
-          <thead>
+        <table className="table table-striped table-hover">
+          <thead className="thead-dark">
             <tr>
               <th>Ticker</th>
               <th>Total Quantity</th>
@@ -39,27 +39,18 @@ const DisplayPortfolio = () => {
             </tr>
           </thead>
           <tbody>
-            {portfolio.map(
-              ({
-                ticker,
-                totalQuantity,
-                averagePrice,
-                totalInvestment,
-                currentValue,
-                profitOrLoss,
-              }) => (
-                <tr key={ticker}>
-                  <td>{ticker}</td>
-                  <td>{totalQuantity}</td>
-                  <td>${averagePrice.toFixed(2)}</td>
-                  <td>${totalInvestment.toFixed(2)}</td>
-                  <td>${currentValue.toFixed(2)}</td>
-                  <td className={profitOrLoss >= 0 ? "profit" : "loss"}>
-                    ${profitOrLoss.toFixed(2)}
-                  </td>
-                </tr>
-              )
-            )}
+            {portfolio.map(({ ticker, totalQuantity, averagePrice, totalInvestment, currentValue, profitOrLoss }) => (
+              <tr key={ticker}>
+                <td>{ticker}</td>
+                <td>{totalQuantity}</td>
+                <td>${averagePrice.toFixed(2)}</td>
+                <td>${totalInvestment.toFixed(2)}</td>
+                <td>${currentValue.toFixed(2)}</td>
+                <td className={profitOrLoss >= 0 ? "text-success" : "text-danger"}>
+                  ${profitOrLoss.toFixed(2)}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       )}

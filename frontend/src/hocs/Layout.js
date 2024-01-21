@@ -1,5 +1,5 @@
 import React, { useEffect, Fragment } from 'react';
-import Navbar from '../components/ui/Navbar';
+import SideBar from '../components/ui/Sidebar';
 import { connect } from 'react-redux';
 import { checkAuthenticated } from '../actions/auth';
 import { load_user } from '../actions/profile'; 
@@ -12,7 +12,7 @@ const Layout = ({ children, checkAuthenticated, load_user }) => {
 
     return (
         <Fragment>
-            <Navbar />
+            <SideBar />
             {children}
         </Fragment>
     );

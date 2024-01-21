@@ -1,0 +1,24 @@
+/* Styles for the main container */
+.dashboard-container {
+    background-color: #13294B;
+    color: white;
+  }
+  
+  /* Styles for the component boxes */
+  .component-box {
+    background-color: white;
+    color: black;
+    border: 3px solid #79aaf4 !important;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .large-gap {
+    margin-top: 100px; /* Adjust the value as needed for the desired gap size */
+  }
+
+  .main-content {
+    margin-left: 150px; /* Match the sidebar width */
+    padding: 1rem;
+}

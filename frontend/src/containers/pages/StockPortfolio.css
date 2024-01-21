@@ -1,0 +1,74 @@
+/* Styles for the main container */
+
+/* StockPortfolio.css */
+
+.transactions-container {
+    max-height: 500px; /* Adjust the height as needed */
+    overflow-y: auto; /* Enables vertical scrolling */
+    margin-bottom: 1rem; /* Adds space below the transactions list */
+  }
+
+  /* StockPortfolio.css */
+
+.portfolio-summary {
+    top: 0; /* Adjust as necessary, 0 means it will stick to the top of the viewport */
+    background: white; /* Or any other color so it stands out from the content scrolling behind it */
+    z-index: 10; /* Ensures it stays on top of other content */
+    padding: 1rem; /* Adds some spacing inside the summary */
+    border-bottom: 2px solid #eee; /* Adds a line to separate from content below */
+  }
+  
+
+.main-content {
+    margin-left: 250px; /* Match the sidebar width */
+    padding: 1rem;
+  }
+  /* Style for the "Add Item" button */
+  .add-item-button {
+    background-color: #007BFF; /* Blue color */
+    color: #fff; /* White text color */
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  /* Style for the main container */
+  .stock-portfolio-container {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  /* Style for the item list */
+  .item-list {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #fff; /* White background */
+    border: 1px solid #ddd; /* Gray border */
+    border-radius: 4px;
+  }
+  
+  /* Style for the "Edit" and "Delete" buttons */
+  .edit-button {
+    background-color: #28a745; /* Green color for Edit button */
+    color: #fff; /* White text color */
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    margin-right: 5px;
+    border-radius: 4px;
+  }
+  
+  .delete-button {
+    background-color: #dc3545; /* Red color for Delete button */
+  }
+  
+  /* Centered container */
+  .centered-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Adjust the height as needed for vertical centering */
+  }
+  
