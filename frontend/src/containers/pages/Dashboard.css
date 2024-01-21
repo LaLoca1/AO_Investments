@@ -3,6 +3,15 @@
     background-color: #13294B;
     color: white;
   }
+
+  /* Dashboard.css */
+
+.dashboard-title {
+  text-align: center; /* Center the title text */
+  margin: 20px 0; /* Add some space above and below the title */
+  font-size: 1.5rem; /* Adjust the font size as needed */
+}
+
   
   /* Styles for the component boxes */
   .component-box {
@@ -12,6 +21,7 @@
     border-radius: 8px;
     padding: 1rem;
     margin-bottom: 1rem;
+    overflow: auto;
   }
   
   .large-gap {
@@ -21,4 +31,9 @@
   .main-content {
     margin-left: 150px; /* Match the sidebar width */
     padding: 1rem;
+}
+
+.row-separator {
+  border-bottom: 1px solid #ddd; /* Light gray border */
+  margin-bottom: 20px; /* Spacing below the line */
 }

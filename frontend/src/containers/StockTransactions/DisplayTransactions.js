@@ -1,17 +1,42 @@
-import React from 'react';
+import React, { useState, useMemo } from "react";
 
 const DisplayTransaction = ({ items, filter, setFilter, onEdit, onDelete }) => {
+  const [sortOrder, setSortOrder] = useState("desc");
+
+  const toggleSortOrder = () => {
+    setSortOrder(sortOrder === "desc" ? "asc" : "desc");
+  };
+
+  const sortedItems = useMemo(() => {
+    return items.sort((a, b) => {
+      const dateA = new Date(a.trade_date);
+      const dateB = new Date(b.trade_date);
+      return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
+    });
+  }, [items, sortOrder]);
+
   return (
     <div>
       <h1>Transactions</h1>
-      <div className="mb-3">
-        <input
-          type="text"
-          className="form-control"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          placeholder="Filter by Ticker"
-        />
+      <div className="mb-3 d-flex justify-content-between align-items-center">
+        <div style={{ width: "80%" }}>
+          {" "}
+          {/* Adjust width as needed */}
+          <input
+            type="text"
+            className="form-control"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            placeholder="Filter by Ticker"
+          />
+        </div>
+        <button
+          style={{ backgroundColor: "#007bff", color: "white", padding: "10px 20px" }}
+          className="btn btn-outline-secondary btn-sm"
+          onClick={toggleSortOrder}
+        >
+          {sortOrder === "desc" ? "Most recent" : "Oldest"}
+        </button>
       </div>
 
       {items.length > 0 ? (
@@ -41,15 +66,25 @@ const DisplayTransaction = ({ items, filter, setFilter, onEdit, onDelete }) => {
                 <td>{item.market}</td>
                 <td>{item.transactionType}</td>
                 <td>
-                  <button className="btn btn-primary btn-sm mx-1" onClick={() => onEdit(item)}>Edit</button>
-                  <button className="btn btn-danger btn-sm mx-1" onClick={() => onDelete(item.id)}>Delete</button>
+                  <button
+                    className="btn btn-primary btn-sm mx-1"
+                    onClick={() => onEdit(item)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="btn btn-danger btn-sm mx-1"
+                    onClick={() => onDelete(item.id)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       ) : (
-        <p>No watchlist items to display.</p>
+        <p>No transactions to display.</p>
       )}
     </div>
   );

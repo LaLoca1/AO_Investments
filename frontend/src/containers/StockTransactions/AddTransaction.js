@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import CSRFToken from "../../components/CSRFToken";
+import './AddTransaction.css'
 
 const AddTransaction = ({ onItemAdded }) => {
   const [ticker, setTicker] = useState("");
@@ -38,8 +39,8 @@ const AddTransaction = ({ onItemAdded }) => {
   };
 
   return (
-    <div>
-      <h2>Add Watchlist Item</h2>
+    <div className="add-transaction-form">
+      <h2>Add Transaction</h2>
       <form onSubmit={handleAddItem}>
         <CSRFToken />
         <label>Ticker:</label>

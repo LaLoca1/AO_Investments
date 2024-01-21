@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import './EditTransaction.css';
 
 const EditTransaction = ({ item, onSave, onCancel }) => {
   const [editedItem, setEditedItem] = useState({ ...item });
@@ -14,6 +15,7 @@ const EditTransaction = ({ item, onSave, onCancel }) => {
 
   return (
     <div className="edit-popup">
+      <h2>Edit Transaction</h2>
       <form onSubmit={handleSubmit}>
         <label>
           Ticker:
@@ -74,8 +76,10 @@ const EditTransaction = ({ item, onSave, onCancel }) => {
           />
         </label>
         
-        <button type="submit">Save</button>
-        <button onClick={onCancel}>Cancel</button>
+        <div className="form-buttons">
+          <button type="submit">Save</button>
+          <button onClick={onCancel}>Cancel</button>
+        </div>
       </form>
     </div>
   );

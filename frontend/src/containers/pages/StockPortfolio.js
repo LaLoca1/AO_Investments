@@ -158,7 +158,7 @@ const StockPortfolio = () => {
           className="add-item-button"
           onClick={() => setIsModalOpen(true)}
         >
-          Add Item
+          Add Transaction
         </button>
 
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
