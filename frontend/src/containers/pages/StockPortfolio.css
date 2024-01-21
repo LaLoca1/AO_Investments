@@ -11,13 +11,14 @@
   /* StockPortfolio.css */
 
 .portfolio-summary {
-    top: 0; /* Adjust as necessary, 0 means it will stick to the top of the viewport */
-    background: white; /* Or any other color so it stands out from the content scrolling behind it */
-    z-index: 10; /* Ensures it stays on top of other content */
-    padding: 1rem; /* Adds some spacing inside the summary */
-    border-bottom: 2px solid #eee; /* Adds a line to separate from content below */
-  }
-  
+  position: auto;
+  top: 0; /* Adjust as necessary, 0 means it will stick to the top of the viewport */
+  background: white; /* Or any other color so it stands out from the content scrolling behind it */
+  z-index: 10; /* Ensures it stays on top of other content */
+  padding: 1rem; /* Adds some spacing inside the summary */
+  border-bottom: 2px solid #eee; /* Adds a line to separate from content below */
+}
+
 
 .main-content {
     margin-left: 250px; /* Match the sidebar width */

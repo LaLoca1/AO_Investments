@@ -1,0 +1,38 @@
+.table-container {
+   margin-top: 50px;
+  }
+  
+  .table-title {
+    text-align: center;
+    margin-bottom: 10px; /* Adjust as needed */
+    /* additional styling as needed */
+  }
+  
+  @media (max-width: 768px) {
+    /* Responsive adjustments for smaller screens */
+    .table-title {
+      font-size: 16px; /* Smaller font size for smaller screens */
+    }
+  }
+
+  .fixed-title {
+    position: fixed;
+    top: 10px; /* Adjust as needed */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000; /* Ensure it's above other elements */
+    /* Additional styling */
+  }
+  
+  .sticky-container {
+    position: relative; /* Container for the sticky element */
+  }
+  
+  .sticky-title {
+    position: sticky;
+    top: 0; /* Adjust as needed */
+    background: white; /* Or your preferred background */
+    z-index: 1000; /* Ensure it's above other elements */
+    /* Additional styling */
+  }
+  

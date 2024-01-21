@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import './DisplayPortfolio.css' 
 const DisplayPortfolio = () => {
   const [portfolio, setPortfolio] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -22,8 +22,9 @@ const DisplayPortfolio = () => {
   };
 
   return (
-    <div>
-      <h1>Stock Portfolio</h1>
+    <div className="table-container">
+      <h2 className="sticky-title">Portfolio Overview</h2>
+      <div className="table-container">
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -54,6 +55,7 @@ const DisplayPortfolio = () => {
           </tbody>
         </table>
       )}
+    </div>
     </div>
   );
 };
