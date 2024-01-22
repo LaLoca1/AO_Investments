@@ -1,10 +1,10 @@
 import React from 'react'; 
-import SectorBreakdownChart from '../SectorBreakdownChart';
-import StockQuantityChart from '../StockQuantityChart';
-import PortfolioPerformanceChart from '../PortfolioPerformanceChart';
-import WeeklyPortfolioPerformanceChart from '../WeeklyPerformanceChart';
-import DailyPerformanceChart from '../DailyPerformanceChart';
-import PortfolioPeriodPerformanceChart from '../PortfolioPeriodPerformanceChart';
+import SectorBreakdownChart from '../StockCharts/SectorBreakdownChart';
+import StockQuantityChart from '../StockCharts/StockQuantityChart';
+import PortfolioPerformanceChart from '../StockCharts/PortfolioPerformanceChart';
+import WeeklyPortfolioPerformanceChart from '../StockCharts/WeeklyPerformanceChart';
+import DailyPerformanceChart from '../StockCharts/DailyPerformanceChart';
+import PortfolioPeriodPerformanceChart from '../StockCharts/PortfolioPeriodPerformanceChart';
 import './Dashboard.css';
 
 const Dashboard = () => (

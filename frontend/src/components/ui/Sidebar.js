@@ -33,7 +33,7 @@ const Sidebar = ({ isAuthenticated, logout }) => {
     return (
         <nav className='sidebar'>
             <div className='sidebar-header'>
-                <Link className='navbar-brand' exact to='/'>AO Investments</Link>
+                <Link className='navbar-brand'>AO Investments</Link>
             </div>
             <ul className='nav flex-column'>
                 { isAuthenticated ? authLinks : guestLinks }
