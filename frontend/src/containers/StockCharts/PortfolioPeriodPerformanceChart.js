@@ -53,6 +53,30 @@ const PortfolioPeriodPerformanceChart = () => {
 
     fetchData();
   }, []);
+  
+  const chartOptions = {
+    scales: {
+      x: {
+        type: 'time',
+        time: {
+          unit: 'day',
+          parser: 'yyyy-MM-dd',
+          displayFormats: {
+            day: 'MMM dd'
+          }
+        },
+        title: {
+          display: true,
+          text: 'Day'
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Percentage (%)'
+        }
+      }
+    }};
 
   if (loading) {
     return <div>Loading...</div>;
@@ -65,7 +89,7 @@ const PortfolioPeriodPerformanceChart = () => {
   return (
     <div style={{ width: "500px", height: "400px", margin: "auto" }}>
       <h2 style={{ textAlign: "center" }}>Weekly Holding Period Return</h2>
-      <Line data={chartData} />
+      <Line data={chartData} options={chartOptions} />
     </div>
   );
 };

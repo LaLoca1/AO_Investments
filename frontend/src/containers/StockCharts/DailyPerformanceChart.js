@@ -80,7 +80,7 @@ const DailyPerformanceChart = () => {
       y: {
         title: {
           display: true,
-          text: 'Value'
+          text: 'Value ($)'
         }
       }
     },

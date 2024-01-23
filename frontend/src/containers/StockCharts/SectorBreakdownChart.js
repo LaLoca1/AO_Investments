@@ -36,7 +36,7 @@ const setupChartData = (data) => {
     labels: data.map((item) => item.sector),
     datasets: [
       {
-        label: "Sector Breakdown",
+        label: "Total Investment",
         data: data.map((item) => item.total_investment),
         backgroundColor: backgroundColors,
         borderColor: backgroundColors.map((color) => color.replace("0.6", "1")),
