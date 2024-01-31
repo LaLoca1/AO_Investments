@@ -195,9 +195,9 @@ class PortfolioView(APIView):
         # This line sends the 'portflio_data' list as a JSON response to the client making the get request
         return Response(portfolio_data)
     
-def get_daily_historical_data(ticker, api_key):
+def get_daily_adjusted_data(ticker, api_key):
     params = {
-        "function": "TIME_SERIES_DAILY",
+        "function": "TIME_SERIES_DAILY_ADJUSTED",
         "symbol": ticker,
         "apikey": api_key
     }
@@ -205,17 +205,34 @@ def get_daily_historical_data(ticker, api_key):
     data = response.json()
     return data.get("Time Series (Daily)", {})
 
-def get_weekly_historical_data(ticker, api_key):
+def get_weekly_adjusted_data(ticker, api_key):
     params = {
-        "function": "TIME_SERIES_WEEKLY",
+        "function": "TIME_SERIES_WEEKLY_ADJUSTED",
         "symbol": ticker,
         "apikey": api_key
     }
     response = requests.get("https://www.alphavantage.co/query", params=params)
     data = response.json()
-    return data.get("Weekly Time Series", {})
+    return data.get("Weekly Adjusted Time Series", {})
 
-def get_stock_quantity(user_profile, ticker, date):
+def get_split_data(ticker, api_key):
+    params = {
+        "function": "TIME_SERIES_DAILY_ADJUSTED",
+        "symbol": ticker,
+        "apikey": api_key
+    }
+    response = requests.get("https://www.alphavantage.co/query", params=params)
+    data = response.json()
+
+    split_data = {}
+    if "Time Series (Daily Adjusted)" in data:
+        for date, daily_data in data["Time Series (Daily Adjusted)"].items():
+            split_coefficient = float(daily_data.get('8. split coefficient', '1.0'))
+            if split_coefficient != 1.0:
+                split_data[date] = split_coefficient
+    return split_data
+
+def get_stock_quantity(user_profile, ticker, date, split_data):
     # Fetch all transactions for the given user and ticker up to the specified date
     transactions = Transaction.objects.filter(
         user=user_profile, 
@@ -233,7 +250,14 @@ def get_stock_quantity(user_profile, ticker, date):
         elif transaction.transactionType == 'sell':
             quantity -= transaction.quantity
 
-    return max(quantity, 0)  # Ensure the quantity doesn't go below zero
+    for split_date_str, split_ratio in split_data.items():
+        split_date = datetime.strptime(split_date_str, "%Y-%m-%d").date()
+        if date >= split_date:
+            quantity *= split_ratio
+
+    return max(quantity, 0)
+
+  # Ensure the quantity doesn't go below zero
 
     
 class PortfolioPerformanceView(APIView):
@@ -308,8 +332,8 @@ class DailyPortfolioPerformanceView(APIView):
 
         # Loops over list of tickers and gets daily historical data
         for ticker in tickers:
-            historical_data = get_daily_historical_data(ticker, api_key) 
-
+            historical_data = get_daily_adjusted_data(ticker, api_key) 
+            split_data = get_split_data(ticker, api_key)
             # Process data within the last 30 days 
             # extracts daily closing price of stock from historical data 
             # calculates quantity of stock held by user 
@@ -317,8 +341,8 @@ class DailyPortfolioPerformanceView(APIView):
             for date_str, data in historical_data.items():
                 date = datetime.strptime(date_str, "%Y-%m-%d").date()
                 if start_date <= date <= end_date:
-                    daily_close_price = float(data['4. close']) 
-                    stock_quantity = get_stock_quantity(user_profile, ticker, date) 
+                    daily_close_price = float(data['5. adjusted close']) 
+                    stock_quantity = get_stock_quantity(user_profile, ticker, date, split_data) 
                     daily_performance[date] = daily_performance.get(date, 0) + stock_quantity * daily_close_price
 
         formatted_performance = [{
@@ -345,14 +369,14 @@ class WeeklyPortfolioPerformanceView(APIView):
         weekly_performance = defaultdict(float)
 
         for ticker in tickers:
-            historical_data = get_weekly_historical_data(ticker, api_key)
-
+            historical_data = get_weekly_adjusted_data(ticker, api_key)
+            split_data = get_split_data(ticker, api_key)
             # Process only data within the last 12 weeks
             for date_str, data in historical_data.items():
                 date = datetime.strptime(date_str, "%Y-%m-%d").date()
                 if start_date <= date <= end_date:
-                    weekly_close_price = float(data['4. close'])
-                    stock_quantity = get_stock_quantity(user_profile, ticker, date)
+                    weekly_close_price = float(data['5. adjusted close'])
+                    stock_quantity = get_stock_quantity(user_profile, ticker, date, split_data)
                     weekly_performance[date] += stock_quantity * weekly_close_price
 
         # Format and sort the performance data
