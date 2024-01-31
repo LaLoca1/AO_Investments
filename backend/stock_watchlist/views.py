@@ -132,18 +132,14 @@ class PortfolioView(APIView):
     # takes 2 parameters 'self' which is a ref to instance of the class, and 'ticker' which is the stock 
     # ticker symbol for which you want to fetch the price. 
     def get_current_stock_price(self, ticker):
-        # This URL is formed to request global quote data for the specified stock symbol
         url = f"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={ticker}&apikey={settings.ALPHA_VANTAGE_API_KEY}"
-        # Sends an HTTP GET request to the URL using requests library. Returns response object that contains server's response 
-        # including HTTP status code, headers and content. 
         response = requests.get(url)
         if response.status_code == 200:
             data = response.json()
             return float(data["Global Quote"]["05. price"])
         else:
-            # Handle errors or use a default value/fallback strategy
             return None
-
+            
     def get(self, request):
         user_profile = request.user.userprofile
         # Retrieves the user's portfolio data from the database using a queryset. Aggregates data related to stock transactions 
@@ -210,7 +206,7 @@ def get_weekly_historical_data(ticker, api_key):
         "function": "TIME_SERIES_WEEKLY",
         "symbol": ticker,
         "apikey": api_key
-    }
+    } 
     response = requests.get("https://www.alphavantage.co/query", params=params)
     data = response.json()
     return data.get("Weekly Time Series", {})

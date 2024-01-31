@@ -88,7 +88,7 @@ const PortfolioPerformanceChart = () => {
 
   return (
     <div style={{ width: "500px", height: "400px", margin: "auto" }}>
-      <h2 style={{ textAlign: "center" }}>Overall Portfolio Value</h2>
+      <h2 style={{ textAlign: "center" }}>Overall Portfolio Performance</h2>
       <Line data={chartData} options={chartOptions} />
     </div>
   );
