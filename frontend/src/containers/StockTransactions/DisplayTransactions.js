@@ -48,7 +48,6 @@ const DisplayTransaction = ({ items, filter, setFilter, onEdit, onDelete }) => {
             <th>Price</th>
             <th>Sector</th>
             <th>Trade Date</th>
-            <th>Market</th>
             <th>Transaction Type</th>
             <th>Actions</th>
             <th>Comments</th>
@@ -62,7 +61,6 @@ const DisplayTransaction = ({ items, filter, setFilter, onEdit, onDelete }) => {
               <td>${item.price}</td>
               <td>{item.sector}</td>
               <td>{new Date(item.trade_date).toLocaleDateString()}</td>
-              <td>{item.market}</td>
               <td>{item.transactionType}</td>
               <td>
                 <button

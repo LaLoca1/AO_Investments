@@ -7,7 +7,6 @@ const AddTransaction = ({ onItemAdded }) => {
   const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState("");
   const [sector, setSector] = useState("");
-  const [market, setMarket] = useState("");
   const [tradeDate, setTradeDate] = useState("");
   const [comments, setComments] = useState(""); // New state for comments
   const [transactionType, setTransactionType] = useState("");
@@ -20,7 +19,6 @@ const AddTransaction = ({ onItemAdded }) => {
       quantity,
       price,
       sector,
-      market,
       trade_date: tradeDate,
       comments,
       transactionType,
@@ -32,7 +30,6 @@ const AddTransaction = ({ onItemAdded }) => {
     setQuantity("");
     setPrice("");
     setSector("");
-    setMarket("");
     setTradeDate("");
     setComments("");
     setTransactionType("");
@@ -72,14 +69,6 @@ const AddTransaction = ({ onItemAdded }) => {
           type="text"
           value={sector}
           onChange={(e) => setSector(e.target.value)}
-          required
-        />
-
-        <label>Market(UK/US):</label>
-        <input
-          type="text"
-          value={market}
-          onChange={(e) => setMarket(e.target.value)}
           required
         />
 

@@ -38,7 +38,7 @@ const EditTransaction = ({ item, onSave, onCancel }) => {
         </label>
 
         <label>
-          Price(£):
+          Price($):
           <input
             type="number"
             name="price"
