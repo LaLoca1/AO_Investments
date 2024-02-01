@@ -22,15 +22,15 @@ const AddTransaction = ({ onItemAdded }) => {
       return false;
     }
 
-    if (transactionType !== "Buy" && transactionType !== "buy" ) {
-      alert("Please enter valid transaction.");
+    if (parseInt(quantity) < 0 && parseInt(price) < 0 ) {
+      alert("Quantity and Price must be positive.");
       return false;
     }
 
-    if (transactionType !== "Sell" && transactionType !== "sell" ) {
-      alert("Please enter valid transaction.");
+    if (transactionType.toLowerCase() !== "buy" && transactionType.toLowerCase() !== "sell") {
+      alert("Please enter a valid transaction type (Buy or Sell).");
       return false;
-    }
+  }
     return true;
   };
 

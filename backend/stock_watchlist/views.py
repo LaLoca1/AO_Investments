@@ -211,6 +211,16 @@ def get_weekly_adjusted_data(ticker, api_key):
     data = response.json()
     return data.get("Weekly Adjusted Time Series", {})
 
+def get_monthly_adjusted_data(ticker, api_key):
+    params = {
+        "function": "TIME_SERIES_MONTHLY_ADJUSTED",
+        "symbol": ticker,
+        "apikey": api_key
+    } 
+    response = requests.get("https://www.alphavantage.co/query", params=params)
+    data = response.json()
+    return data.get("Monthly Adjusted Time Series", {})
+
 def get_split_data(ticker, api_key):
     params = {
         "function": "TIME_SERIES_DAILY_ADJUSTED",
@@ -378,5 +388,33 @@ class WeeklyPortfolioPerformanceView(APIView):
         # Format and sort the performance data
         formatted_performance = [{"week": date.strftime("%Y-%m-%d"), "total_value": value} for date, value in weekly_performance.items()]
         return Response(sorted(formatted_performance, key=lambda x: x['week']))
+
+class MonthlyPortfolioPerformanceView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_profile = request.user.userprofile
+        api_key = settings.ALPHA_VANTAGE_API_KEY
+
+        # Define the date range for the last 12 months
+        end_date = datetime.today().date()
+        start_date = end_date - timedelta(days=365)
+
+        # Fetch unique tickers from the user's transactions
+        tickers = Transaction.objects.filter(user=user_profile).values_list('ticker', flat=True).distinct()
+        monthly_performance = defaultdict(float)
+
+        for ticker in tickers:
+            historical_data = get_monthly_adjusted_data(ticker, api_key)
+            split_data = get_split_data(ticker, api_key)
+            for date_str, data in historical_data.items():
+                date = datetime.strptime(date_str, "%Y-%m-%d").date()
+                if start_date <= date <= end_date:
+                    monthly_close_price = float(data['5. adjusted close'])
+                    stock_quantity = get_stock_quantity(user_profile, ticker, date, split_data)
+                    monthly_performance[date] += stock_quantity * monthly_close_price
+
+        formatted_performance = [{"month": date.strftime("%Y-%m"), "total_value": value} for date, value in monthly_performance.items()]
+        return Response(sorted(formatted_performance, key=lambda x: x['month']))
 
     

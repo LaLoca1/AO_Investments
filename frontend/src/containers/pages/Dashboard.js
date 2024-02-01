@@ -5,6 +5,7 @@ import PortfolioPerformanceChart from '../StockCharts/PortfolioPerformanceChart'
 import WeeklyPortfolioPerformanceChart from '../StockCharts/WeeklyPerformanceChart';
 import DailyPerformanceChart from '../StockCharts/DailyPerformanceChart';
 import PortfolioPeriodPerformanceChart from '../StockCharts/PortfolioPeriodPerformanceChart';
+import MonthlyPortfolioPerformanceChart from '../StockCharts/MonthlyPerformanceChart';
 import './Dashboard.css';
 
 const Dashboard = () => (
@@ -44,6 +45,11 @@ const Dashboard = () => (
                 <div className="col-md-6"> {/* Increase column width to make it larger */}
                     <div className="p-8 mb-3"> {/* Increase padding for larger box */}
                         <DailyPerformanceChart/>
+                    </div>
+                </div>
+                <div className="col-md-6"> {/* Increase column width to make it larger */}
+                    <div className="p-8 mb-3"> {/* Increase padding for larger box */}
+                        <MonthlyPortfolioPerformanceChart/>
                     </div>
                 </div>
             </div>
