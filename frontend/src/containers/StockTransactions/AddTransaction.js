@@ -11,13 +11,40 @@ const AddTransaction = ({ onItemAdded }) => {
   const [comments, setComments] = useState(""); // New state for comments
   const [transactionType, setTransactionType] = useState("");
 
+  const validateInput = () => {
+    if (parseInt(quantity) < 0 ) {
+      alert("Quantity must be positive.");
+      return false;
+    }
+
+    if (parseInt(price) < 0 ) {
+      alert("Price must be positive.");
+      return false;
+    }
+
+    if (transactionType !== "Buy" && transactionType !== "buy" ) {
+      alert("Please enter valid transaction.");
+      return false;
+    }
+
+    if (transactionType !== "Sell" && transactionType !== "sell" ) {
+      alert("Please enter valid transaction.");
+      return false;
+    }
+    return true;
+  };
+
   const handleAddItem = async (e) => {
     e.preventDefault();
 
+    if (!validateInput()) {
+      return; 
+    }
+
     const newItem = {
       ticker,
-      quantity,
-      price,
+      quantity: parseInt(quantity), 
+      price: parseFloat(price), 
       sector,
       trade_date: tradeDate,
       comments,
@@ -56,7 +83,7 @@ const AddTransaction = ({ onItemAdded }) => {
           required
         />
 
-        <label>Price(£):</label>
+        <label>Price($):</label>
         <input
           type="number"
           value={price}

@@ -23,7 +23,6 @@ class CreateTransactionViewTest(APITestCase):
             "quantity": 50,
             "price": 150.00,
             "sector": "Technology",
-            "market": "US",
             "trade_date": "2024-01-01T10:00:00Z",
             "comments": "Purchased after product launch event",
             "transactionType": "buy"
@@ -31,50 +30,46 @@ class CreateTransactionViewTest(APITestCase):
         response = self.client.post(url, data) 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_create_transaction_market_failure(self):
+    def test_create_transaction_negative_price_failure(self):
         url = reverse('create-transaction')
         data = {
             "ticker": "AAPL",
             "quantity": 50,
-            "price": 150.00,
+            "price": -150.00,
             "sector": "Technology",
-            "market": "USA",
             "trade_date": "2024-01-01T10:00:00Z",
             "comments": "Purchased after product launch event",
             "transactionType": "buy"
         }
         response = self.client.post(url, data) 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_create_transaction_negative_price_failure(self):
-            url = reverse('create-transaction')
-            data = {
-                "ticker": "AAPL",
-                "quantity": 50,
-                "price": -150.00,
-                "sector": "Technology",
-                "market": "USA",
-                "trade_date": "2024-01-01T10:00:00Z",
-                "comments": "Purchased after product launch event",
-                "transactionType": "buy"
-            }
-            response = self.client.post(url, data) 
-            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
     
     def test_create_transaction_negative_quantity_failure(self):
-            url = reverse('create-transaction')
-            data = {
-                "ticker": "AAPL",
-                "quantity": -50,
-                "price": 150.00,
-                "sector": "Technology",
-                "market": "USA",
-                "trade_date": "2024-01-01T10:00:00Z",
-                "comments": "Purchased after product launch event",
-                "transactionType": "buy"
-            }
-            response = self.client.post(url, data) 
-            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        url = reverse('create-transaction')
+        data = {
+            "ticker": "AAPL",
+            "quantity": -50,
+            "price": 150.00,
+            "sector": "Technology",
+            "trade_date": "2024-01-01T10:00:00Z",
+            "comments": "Purchased after product launch event",
+            "transactionType": "buy"
+        }
+
+    def test_create_transaction_type_failure(self):
+        url = reverse('create-transaction')
+        data = {
+            "ticker": "AAPL",
+            "quantity": 50,
+            "price": 150.00,
+            "sector": "Technology",
+            "trade_date": "2024-01-01T10:00:00Z",
+            "comments": "Purchased after product launch event",
+            "transactionType": "buyy"
+        }
+
+        response = self.client.post(url, data) 
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 class DeleteTransactionViewTest(APITestCase):
 
@@ -87,7 +82,6 @@ class DeleteTransactionViewTest(APITestCase):
             quantity=10,
             price=150.00,
             sector="Technology",
-            market="US",
             trade_date="2024-01-01T10:00:00Z",
             comments="Test transaction",
             transactionType="buy"
@@ -110,7 +104,6 @@ class EditTransactionViewTest(APITestCase):
             quantity=10,
             price=150.00,
             sector="Technology",
-            market="US",
             trade_date="2024-01-01T10:00:00Z",
             comments="Test transaction",
             transactionType="buy"
@@ -124,29 +117,12 @@ class EditTransactionViewTest(APITestCase):
                 "quantity": 7,
                 "price": 150.00,
                 "sector": "Technology",
-                "market": "US",
                 "trade_date": "2024-01-01T10:00:00Z",
                 "comments": "Stable investment",
                 "transactionType": "buy"
             }
         response = self.client.put(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
-    def test_edit_transaction_market_failure(self): 
-        self.client.login(username='testuser', password='Password@123') 
-        url = reverse('edit-transaction', kwargs={'pk': self.transaction.pk})
-        data = {
-                "ticker": "AAPL",
-                "quantity": 7,
-                "price": 150.00,
-                "sector": "Technology",
-                "market": "USA",
-                "trade_date": "2024-01-01T10:00:00Z",
-                "comments": "Stable investment",
-                "transactionType": "buy"
-            }
-        response = self.client.put(url, data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_edit_transaction_quantity_failure(self): 
         self.client.login(username='testuser', password='Password@123') 
@@ -156,7 +132,6 @@ class EditTransactionViewTest(APITestCase):
                 "quantity": -7,
                 "price": 150.00,
                 "sector": "Technology",
-                "market": "USA",
                 "trade_date": "2024-01-01T10:00:00Z",
                 "comments": "Stable investment",
                 "transactionType": "buy"
@@ -172,7 +147,6 @@ class EditTransactionViewTest(APITestCase):
                 "quantity": 7,
                 "price": -150.00,
                 "sector": "Technology",
-                "market": "USA",
                 "trade_date": "2024-01-01T10:00:00Z",
                 "comments": "Stable investment",
                 "transactionType": "buy"

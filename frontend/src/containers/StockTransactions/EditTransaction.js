@@ -4,12 +4,28 @@ import './EditTransaction.css';
 const EditTransaction = ({ item, onSave, onCancel }) => {
   const [editedItem, setEditedItem] = useState({ ...item });
 
+  const validateInput = () => {
+    if (parseInt(editedItem.quantity) < 0 ) {
+      alert("Quantity must be positive.");
+      return false;
+    }
+
+    if (parseInt(editedItem.price) < 0 ) {
+      alert("Price must be positive.");
+      return false;
+    }
+    return true;
+  };
+
   const handleChange = (e) => {
     setEditedItem({ ...editedItem, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!validateInput()) {
+      return; 
+    }
     onSave(editedItem);
   };
 

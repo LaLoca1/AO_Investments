@@ -6,7 +6,15 @@ class TransactionSerializer(serializers.ModelSerializer):
         model = Transaction
         fields = '__all__' 
         read_only_fields = ['user']
-
+        
+    def validate_price(self, value):
+        """
+        Check that the price is positive.
+        """
+        if value <= 0:
+            raise serializers.ValidationError("Price must be positive.")
+        return value
+    
 class PortfolioSerializer(serializers.Serializer):
     ticker = serializers.CharField() 
     totalQuantity = serializers.IntegerField()
