@@ -32,10 +32,10 @@ const MonthlyPortfolioPerformanceChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("watchlist/api/user/monthly-portfolio-performance/");
+        const response = await axios.get("watchlist/api/user/monthly-portfolio-performance/");  // Adjust API path as necessary
         const data = response.data;
         setChartData({
-          labels: data.map(item => item.month),  // Assuming each item has a 'month' field
+          labels: data.map(item => item.month),
           datasets: [
             {
               label: 'Portfolio Value',
@@ -62,7 +62,7 @@ const MonthlyPortfolioPerformanceChart = () => {
         type: 'time',
         time: {
           unit: 'month',
-          parser: 'yyyy-MM-dd',
+          parser: 'yyyy-MM',
           displayFormats: {
             month: 'MMM yyyy'
           }
@@ -80,7 +80,6 @@ const MonthlyPortfolioPerformanceChart = () => {
       }
     }
   };
-  
 
   if (loading) {
     return <div>Loading...</div>;
@@ -92,10 +91,11 @@ const MonthlyPortfolioPerformanceChart = () => {
 
   return (
     <div style={{ width: "500px", height: "400px", margin: "auto" }}>
-      <h2 style={{ textAlign: "center" }}>Monthly Portfolio Performance</h2>
+      <h2>Monthly Portfolio Performance</h2>
       <Line data={chartData} options={chartOptions} />
     </div>
   );
 };
 
 export default MonthlyPortfolioPerformanceChart;
+

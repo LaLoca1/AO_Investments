@@ -394,19 +394,21 @@ class MonthlyPortfolioPerformanceView(APIView):
 
     def get(self, request):
         user_profile = request.user.userprofile
-        api_key = settings.ALPHA_VANTAGE_API_KEY
-
-        # Define the date range for the last 12 months
-        end_date = datetime.today().date()
-        start_date = end_date - timedelta(days=365)
+        api_key = settings.ALPHA_VANTAGE_API_KEY  # Ideally, this should be in your settings or environment variables
+        
+        # Define the date range for the last 12 weeks 
+        end_date = datetime.today().date() 
+        start_date = end_date - timedelta(days=365) 
 
         # Fetch unique tickers from the user's transactions
         tickers = Transaction.objects.filter(user=user_profile).values_list('ticker', flat=True).distinct()
+        # Initialize a structure to hold weekly performance data
         monthly_performance = defaultdict(float)
 
         for ticker in tickers:
             historical_data = get_monthly_adjusted_data(ticker, api_key)
             split_data = get_split_data(ticker, api_key)
+            # Process only data within the last 12 weeks
             for date_str, data in historical_data.items():
                 date = datetime.strptime(date_str, "%Y-%m-%d").date()
                 if start_date <= date <= end_date:
@@ -414,6 +416,7 @@ class MonthlyPortfolioPerformanceView(APIView):
                     stock_quantity = get_stock_quantity(user_profile, ticker, date, split_data)
                     monthly_performance[date] += stock_quantity * monthly_close_price
 
+        # Format and sort the performance data
         formatted_performance = [{"month": date.strftime("%Y-%m"), "total_value": value} for date, value in monthly_performance.items()]
         return Response(sorted(formatted_performance, key=lambda x: x['month']))
 
