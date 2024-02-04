@@ -14,6 +14,9 @@ const Sidebar = ({ isAuthenticated, logout }) => {
                 <NavLink className='nav-link' to='/stockportfolio'>StockPortfolio</NavLink>
             </li>
             <li className='nav-item'>
+                <NavLink className='nav-link' to='/news'>News Section</NavLink>
+            </li>
+            <li className='nav-item'>
                 <NavLink className='nav-link' to='/userprofile'>User Profile</NavLink>
             </li>
             <li className='nav-item'>

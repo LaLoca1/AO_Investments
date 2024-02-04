@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "accounts", 
     "user_profile", 
-    "stock_watchlist"
+    "stock_watchlist",
+    "news_section"
 ]
 
 MIDDLEWARE = [
