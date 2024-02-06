@@ -125,7 +125,82 @@ class StockQuantityView(APIView):
             .order_by('-total_quantity')
         
         return Response(list(stock_data)) 
-    
+
+def get_daily_adjusted_data(ticker, api_key):
+    params = {
+        "function": "TIME_SERIES_DAILY_ADJUSTED",
+        "symbol": ticker,
+        "apikey": api_key
+    }
+    response = requests.get("https://www.alphavantage.co/query", params=params)
+    data = response.json()
+    return data.get("Time Series (Daily)", {})
+
+def get_weekly_adjusted_data(ticker, api_key):
+    params = {
+        "function": "TIME_SERIES_WEEKLY_ADJUSTED",
+        "symbol": ticker,
+        "apikey": api_key
+    } 
+    response = requests.get("https://www.alphavantage.co/query", params=params)
+    data = response.json()
+    return data.get("Weekly Adjusted Time Series", {})
+
+def get_monthly_adjusted_data(ticker, api_key):
+    params = {
+        "function": "TIME_SERIES_MONTHLY_ADJUSTED",
+        "symbol": ticker,
+        "apikey": api_key
+    } 
+    response = requests.get("https://www.alphavantage.co/query", params=params)
+    data = response.json()
+    return data.get("Monthly Adjusted Time Series", {})
+
+def get_split_data(ticker, api_key):
+    params = {
+        "function": "TIME_SERIES_DAILY_ADJUSTED",
+        "symbol": ticker,
+        "apikey": api_key
+    }
+    response = requests.get("https://www.alphavantage.co/query", params=params)
+    data = response.json()
+
+    split_data = {}
+    if "Time Series (Daily Adjusted)" in data:
+        for date, daily_data in data["Time Series (Daily Adjusted)"].items():
+            split_coefficient = float(daily_data.get('8. split coefficient', '1.0'))
+            if split_coefficient != 1.0:
+                split_data[date] = split_coefficient
+
+    return split_data
+
+def get_stock_quantity(user_profile, ticker, date, split_data):
+    # Fetch all transactions for the given user and ticker up to the specified date
+    transactions = Transaction.objects.filter(
+        user=user_profile, 
+        ticker=ticker, 
+        trade_date__lte=date
+    )
+
+    # Initialize quantity
+    quantity = 0
+
+    # Sum up the quantities, accounting for buys and sells
+    for transaction in transactions:
+        if transaction.transactionType == 'buy':
+            quantity += transaction.quantity
+        elif transaction.transactionType == 'sell':
+            quantity -= transaction.quantity
+
+    for split_date_str, split_ratio in split_data.items():
+        split_date = datetime.strptime(split_date_str, "%Y-%m-%d").date()
+        if date >= split_date:
+            quantity *= split_ratio
+
+    return max(quantity, 0)
+
+  # Ensure the quantity doesn't go below zero
+
 class PortfolioView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -173,10 +248,15 @@ class PortfolioView(APIView):
         portfolio_data = []
         # Iterates through each item (each stock) in portfolio_items queryset
         for item in portfolio_items:
+            ticker = item['ticker'] 
+            split_data = get_split_data(ticker, settings.ALPHA_VANTAGE_API_KEY) 
+
+            adjusted_quantity = get_stock_quantity(user_profile, ticker, datetime.today().date(), split_data)
+
             current_price = self.get_current_stock_price(item['ticker'])
             if current_price is not None:
-                total_investment = item['totalQuantity'] * item['averagePrice']
-                current_value = item['totalQuantity'] * current_price
+                total_investment = adjusted_quantity * item['averagePrice']
+                current_value = adjusted_quantity * current_price
                 profit_or_loss = Decimal(current_value) - total_investment
 
                 portfolio_data.append({
@@ -186,85 +266,10 @@ class PortfolioView(APIView):
                     'totalInvestment': total_investment,
                     'currentValue': current_value,
                     'profitOrLoss': profit_or_loss,
-                    'currentPrice': current_price
+                    'currentPrice': current_price,
                 })
         # This line sends the 'portflio_data' list as a JSON response to the client making the get request
         return Response(portfolio_data)
-    
-def get_daily_adjusted_data(ticker, api_key):
-    params = {
-        "function": "TIME_SERIES_DAILY_ADJUSTED",
-        "symbol": ticker,
-        "apikey": api_key
-    }
-    response = requests.get("https://www.alphavantage.co/query", params=params)
-    data = response.json()
-    return data.get("Time Series (Daily)", {})
-
-def get_weekly_adjusted_data(ticker, api_key):
-    params = {
-        "function": "TIME_SERIES_WEEKLY_ADJUSTED",
-        "symbol": ticker,
-        "apikey": api_key
-    } 
-    response = requests.get("https://www.alphavantage.co/query", params=params)
-    data = response.json()
-    return data.get("Weekly Adjusted Time Series", {})
-
-def get_monthly_adjusted_data(ticker, api_key):
-    params = {
-        "function": "TIME_SERIES_MONTHLY_ADJUSTED",
-        "symbol": ticker,
-        "apikey": api_key
-    } 
-    response = requests.get("https://www.alphavantage.co/query", params=params)
-    data = response.json()
-    return data.get("Monthly Adjusted Time Series", {})
-
-def get_split_data(ticker, api_key):
-    params = {
-        "function": "TIME_SERIES_DAILY_ADJUSTED",
-        "symbol": ticker,
-        "apikey": api_key
-    }
-    response = requests.get("https://www.alphavantage.co/query", params=params)
-    data = response.json()
-
-    split_data = {}
-    if "Time Series (Daily Adjusted)" in data:
-        for date, daily_data in data["Time Series (Daily Adjusted)"].items():
-            split_coefficient = float(daily_data.get('8. split coefficient', '1.0'))
-            if split_coefficient != 1.0:
-                split_data[date] = split_coefficient
-    return split_data
-
-def get_stock_quantity(user_profile, ticker, date, split_data):
-    # Fetch all transactions for the given user and ticker up to the specified date
-    transactions = Transaction.objects.filter(
-        user=user_profile, 
-        ticker=ticker, 
-        trade_date__lte=date
-    )
-
-    # Initialize quantity
-    quantity = 0
-
-    # Sum up the quantities, accounting for buys and sells
-    for transaction in transactions:
-        if transaction.transactionType == 'buy':
-            quantity += transaction.quantity
-        elif transaction.transactionType == 'sell':
-            quantity -= transaction.quantity
-
-    for split_date_str, split_ratio in split_data.items():
-        split_date = datetime.strptime(split_date_str, "%Y-%m-%d").date()
-        if date >= split_date:
-            quantity *= split_ratio
-
-    return max(quantity, 0)
-
-  # Ensure the quantity doesn't go below zero
-
     
 class PortfolioPerformanceView(APIView):
     permission_classes = [IsAuthenticated]
@@ -358,6 +363,7 @@ class DailyPortfolioPerformanceView(APIView):
 
         return Response(formatted_performance)
 
+
 class WeeklyPortfolioPerformanceView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -419,5 +425,3 @@ class MonthlyPortfolioPerformanceView(APIView):
         # Format and sort the performance data
         formatted_performance = [{"month": date.strftime("%Y-%m"), "total_value": value} for date, value in monthly_performance.items()]
         return Response(sorted(formatted_performance, key=lambda x: x['month']))
-
-    
