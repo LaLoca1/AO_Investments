@@ -8,10 +8,10 @@ const Sidebar = ({ isAuthenticated, logout }) => {
     const authLinks = (
         <Fragment>
             <li className='nav-item'>
-                <NavLink className='nav-link' to='/dashboard'>Dashboard</NavLink>
+                <NavLink className='nav-link' to='/dashboard'>Stocks Dashboard</NavLink>
             </li>
             <li className='nav-item'>
-                <NavLink className='nav-link' to='/stockportfolio'>Stock Portfolio</NavLink>
+                <NavLink className='nav-link' to='/stockportfolio'>Stocks Portfolio</NavLink>
             </li>
             <li className='nav-item'>
                 <NavLink className='nav-link' to='/cryptodashboard'>Crypto Dashboard</NavLink>

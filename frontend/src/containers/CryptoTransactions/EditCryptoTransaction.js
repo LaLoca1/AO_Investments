@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import './EditTransaction.css';
 
-const EditTransaction = ({ item, onSave, onCancel }) => {
+const EditCryptoTransaction = ({ item, onSave, onCancel }) => {
   const [editedItem, setEditedItem] = useState({ ...item });
 
   const validateInput = () => {
@@ -34,11 +34,11 @@ const EditTransaction = ({ item, onSave, onCancel }) => {
       <h2>Edit Transaction</h2>
       <form onSubmit={handleSubmit}>
         <label>
-          Ticker:
+          Coin:
           <input
             type="text"
-            name="ticker"
-            value={editedItem.ticker}
+            name="coin"
+            value={editedItem.coin}
             onChange={handleChange}
           />
         </label>
@@ -101,4 +101,4 @@ const EditTransaction = ({ item, onSave, onCancel }) => {
   );
 };
 
-export default EditTransaction;
+export default EditCryptoTransaction;

@@ -3,10 +3,10 @@ import CSRFToken from "../../components/CSRFToken";
 import './AddTransaction.css'
 
 const AddCryptoTransaction = ({ onItemAdded }) => {
-  const [ticker, setTicker] = useState("");
+  const [coin, setCoin] = useState("");
   const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState("");
-  const [sector, setSector] = useState("");
+  const [fees, setFees] = useState("");
   const [tradeDate, setTradeDate] = useState("");
   const [comments, setComments] = useState(""); // New state for comments
   const [transactionType, setTransactionType] = useState("");
@@ -42,10 +42,10 @@ const AddCryptoTransaction = ({ onItemAdded }) => {
     }
 
     const newItem = {
-      ticker,
+      coin,
       quantity: parseInt(quantity), 
       price: parseFloat(price), 
-      sector,
+      fees,
       trade_date: tradeDate,
       comments,
       transactionType,
@@ -53,10 +53,10 @@ const AddCryptoTransaction = ({ onItemAdded }) => {
 
     onItemAdded(newItem);
 
-    setTicker("");
+    setCoin("");
     setQuantity("");
     setPrice("");
-    setSector("");
+    setFees("");
     setTradeDate("");
     setComments("");
     setTransactionType("");
@@ -67,11 +67,11 @@ const AddCryptoTransaction = ({ onItemAdded }) => {
       <h2>Add Transaction</h2>
       <form onSubmit={handleAddItem}>
         <CSRFToken />
-        <label>Ticker:</label>
+        <label>Coin:</label>
         <input
           type="text"
-          value={ticker}
-          onChange={(e) => setTicker(e.target.value)}
+          value={coin}
+          onChange={(e) => setCoin(e.target.value)}
           required
         />
 
@@ -91,11 +91,11 @@ const AddCryptoTransaction = ({ onItemAdded }) => {
           required
         />
 
-        <label>Sector:</label>
+        <label>Fees($):</label>
         <input
-          type="text"
-          value={sector}
-          onChange={(e) => setSector(e.target.value)}
+          type="number"
+          value={fees}
+          onChange={(e) => setFees(e.target.value)}
           required
         />
 

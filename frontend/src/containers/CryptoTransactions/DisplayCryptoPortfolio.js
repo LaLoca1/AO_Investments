@@ -13,7 +13,7 @@ const DisplayCryptoPortfolio = () => {
   const fetchPortfolioData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("/watchlist/api/user/portfolio/");
+      const response = await axios.get("/crypto-transactions/api/user/crypto-portfolio/");
       setPortfolio(response.data);
     } catch (error) {
       console.error("Error fetching portfolio data:", error);
@@ -24,7 +24,7 @@ const DisplayCryptoPortfolio = () => {
 
   return (
     <div className="table-container">
-      <h2 className="sticky-title">Portfolio Overview</h2>
+      <h2 className="sticky-title">Crypto Portfolio Overview</h2>
       <div className="table-container">
         {loading ? (
           <p>Loading...</p>
@@ -32,7 +32,7 @@ const DisplayCryptoPortfolio = () => {
           <table className="table table-striped table-hover">
             <thead className="thead-dark">
               <tr>
-                <th>Ticker</th>
+                <th>Coin</th>
                 <th>Total Quantity</th>
                 <th>Average Price</th>
                 <th>Total Investment</th>
@@ -44,7 +44,7 @@ const DisplayCryptoPortfolio = () => {
             <tbody>
               {portfolio.map(
                 ({
-                  ticker,
+                  coin,
                   totalQuantity,
                   averagePrice,
                   totalInvestment,
@@ -54,8 +54,8 @@ const DisplayCryptoPortfolio = () => {
                   const percentageChange =
                     ((currentValue - totalInvestment) / totalInvestment) * 100;
                   return (
-                    <tr key={ticker}>
-                      <td>{ticker}</td>
+                    <tr key={coin}>
+                      <td>{coin}</td>
                       <td>{totalQuantity}</td>
                       <td>${averagePrice.toFixed(2)}</td>
                       <td>${totalInvestment.toFixed(2)}</td>

@@ -141,14 +141,25 @@ class CryptoPortfolioView(APIView):
     # takes 2 parameters 'self' which is a ref to instance of the class, and 'ticker' which is the stock 
     # ticker symbol for which you want to fetch the price. 
     def get_current_crypto_price(self, coin):
-        url = f'https://www.alphavantage.co/query?function=CRYPTO_INTRADAY&symbol={coin}&market=USD&interval=5min&apikey={settings.ALPHA_VANTAGE_API_KEY}'
-        response = requests.get(url)
+        url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
+        parameters = {
+            'symbol': coin,
+            'convert': 'USD'
+        }
+        headers = {
+            'Accepts': 'application/json',
+            'X-CMC_PRO_API_KEY': settings.COIN_MARKET_CAP_API_KEY
+        }
+
+        response = requests.get(url, headers=headers, params=parameters)
         if response.status_code == 200:
             data = response.json()
-            return float(data["Time Series Crypto (5min)"]["4. close"])
+            price = data['data'][coin]['quote']['USD']['price']
+            return float(price)
         else:
+            print(f"Error in API request: {response.status_code}")
             return None
-            
+                
     def get(self, request):
         user_profile = request.user.userprofile
         portfolio_items = (
@@ -177,23 +188,23 @@ class CryptoPortfolioView(APIView):
         portfolio_data = []
         # Iterates through each item (each stock) in portfolio_items queryset
         for item in portfolio_items:
-            ticker = item['coin'] 
-            crypto_quantity = (user_profile, ticker, datetime.today().date())
+            coin = item['coin'] 
+            crypto_quantity = item['totalQuantity']  # Corrected this line
 
-            current_price = self.get_current_crypto_price(item['coin'])
+            current_price = self.get_current_crypto_price(coin)
             if current_price is not None:
                 total_investment = crypto_quantity * item['averagePrice']
                 current_value = crypto_quantity * current_price
-                profit_or_loss = Decimal(current_value) - total_investment
+                profit_or_loss = Decimal(current_value) - Decimal(total_investment)
 
-                portfolio_data.append({
-                    'coin': item['coin'],
-                    'totalQuantity': item['totalQuantity'],
-                    'averagePrice': item['averagePrice'],
-                    'totalInvestment': total_investment,
-                    'currentValue': current_value,
-                    'profitOrLoss': profit_or_loss,
-                    'currentPrice': current_price,
-                })
+            portfolio_data.append({
+                'coin': coin,  # Using the variable 'coin' here for clarity
+                'totalQuantity': crypto_quantity,
+                'averagePrice': item['averagePrice'],
+                'totalInvestment': total_investment,
+                'currentValue': current_value,
+                'profitOrLoss': profit_or_loss,
+                'currentPrice': current_price,
+            })
         # This line sends the 'portflio_data' list as a JSON response to the client making the get request
         return Response(portfolio_data)

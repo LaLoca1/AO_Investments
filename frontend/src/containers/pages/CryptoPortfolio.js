@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import DisplayTransactions from "../CryptoTransactions/DisplayCryptoTransactions";
-import AddTransaction from "../CryptoTransactions/AddCryptoTransaction";
-import EditTransaction from "../CryptoTransactions/EditTransaction";
-import DisplayPortfolio from "../CryptoTransactions/DisplayCryptoPortfolio";
+import DisplayCryptoTransactions from "../CryptoTransactions/DisplayCryptoTransactions";
+import AddCryptoTransaction from "../CryptoTransactions/AddCryptoTransaction";
+import EditCryptoTransaction from "../CryptoTransactions/EditCryptoTransaction";
+import DisplayCryptoPortfolio from "../CryptoTransactions/DisplayCryptoPortfolio";
 import Modal from "../CryptoTransactions/Modal";
 import "./StockPortfolio.css";
 
@@ -152,7 +152,7 @@ const CryptoPortfolio = () => {
     <div className="centered-container">
       <div className="stock-portfolio-container">
         <div className="portfolio-summary">
-          <DisplayPortfolio key={refreshCounter} />
+          <DisplayCryptoPortfolio key={refreshCounter} />
         </div>
         <button
           className="add-item-button"
@@ -162,11 +162,11 @@ const CryptoPortfolio = () => {
         </button>
 
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-          <AddTransaction onItemAdded={handleAddItem} />
+          <AddCryptoTransaction onItemAdded={handleAddItem} />
         </Modal>
 
         <div className="transactions-container">
-          <DisplayTransactions
+          <DisplayCryptoTransactions
             items={filteredItems}
             filter={filter}
             setFilter={setFilter}
@@ -175,7 +175,7 @@ const CryptoPortfolio = () => {
           />
         </div>
         <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
-          <EditTransaction
+          <EditCryptoTransaction
             item={editingItem}
             onSave={handleSaveEdit}
             onCancel={handleCancelEdit}

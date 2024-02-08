@@ -17,7 +17,7 @@ const DisplayCryptoTransactions = ({ items, filter, setFilter, onEdit, onDelete 
 
   return (
     <div>
-      <h1>Transactions</h1>
+      <h1>Crypto Transactions</h1>
       <div className="mb-3 d-flex justify-content-between align-items-center">
         <div style={{ width: "80%" }}>
           {" "}
@@ -27,7 +27,7 @@ const DisplayCryptoTransactions = ({ items, filter, setFilter, onEdit, onDelete 
             className="form-control"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            placeholder="Filter by Ticker"
+            placeholder="Filter by Coin"
           />
         </div>
         <button
@@ -43,10 +43,10 @@ const DisplayCryptoTransactions = ({ items, filter, setFilter, onEdit, onDelete 
         <table className="table table-striped table-hover">
         <thead>
           <tr>
-            <th>Ticker</th>
+            <th>Coin</th>
             <th>Quantity</th>
             <th>Price</th>
-            <th>Sector</th>
+            <th>Fees</th>
             <th>Trade Date</th>
             <th>Transaction Type</th>
             <th>Actions</th>
@@ -56,10 +56,10 @@ const DisplayCryptoTransactions = ({ items, filter, setFilter, onEdit, onDelete 
         <tbody>
           {items.map((item) => (
             <tr key={item.id}>
-              <td>{item.ticker}</td>
+              <td>{item.coin}</td>
               <td>{item.quantity}</td>
               <td>${item.price}</td>
-              <td>{item.sector}</td>
+              <td>{item.fees}</td>
               <td>{new Date(item.trade_date).toLocaleDateString()}</td>
               <td>{item.transactionType}</td>
               <td>

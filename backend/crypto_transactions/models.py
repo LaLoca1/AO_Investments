@@ -12,6 +12,7 @@ class CryptoTransaction(models.Model):
     coin = models.CharField(max_length=20)
     quantity = models.DecimalField(max_digits=10, decimal_places=2)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    fees = models.DecimalField(max_digits=10, decimal_places=2)
     trade_date = models.DateTimeField()
     created_timestamp = models.DateTimeField(auto_now_add=True)
     comments = models.CharField(max_length=140, blank=True)
@@ -29,7 +30,7 @@ class CryptoTransaction(models.Model):
 
         buy_transactions = CryptoTransaction.objects.filter(
             user=self.user, 
-            ticker=self.ticker, 
+            coin=self.coin, 
             transactionType='buy', 
             quantity__gt = 0 
         ).order_by('trade_date')
@@ -50,7 +51,7 @@ class CryptoTransaction(models.Model):
 
     
     def __str__(self):
-        return f"{self.ticker} ({self.transactionType}) - {self.quantity} @ {self.price}"
+        return f"{self.coin} ({self.transactionType}) - {self.quantity} @ {self.price}"
 
     class Meta:
         verbose_name = 'Crypto Transaction'
