@@ -201,6 +201,31 @@ def get_stock_quantity(user_profile, ticker, date, split_data):
 
   # Ensure the quantity doesn't go below zero
 
+def get_dividend_data(ticker, api_key):
+    params = {
+        "function": "TIME_SERIES_MONTHLY_ADJUSTED",
+        "symbol": ticker,
+        "apikey": api_key
+    }
+    response = requests.get("https://www.alphavantage.co/query", params=params)
+    data = response.json()
+
+    monthly_data = data.get("Monthly Adjusted Time Series", {})
+    
+    # Store both date and dividend amount
+    dividend_info = []
+    for date, details in monthly_data.items():
+        dividend_amount = float(details.get("7. dividend amount", 0))
+        if dividend_amount > 0:
+            dividend_info.append({
+                "date": date,
+                "dividend_amount": dividend_amount
+            })
+
+    return dividend_info
+
+
+
 class PortfolioView(APIView):
     permission_classes = [IsAuthenticated]
 
