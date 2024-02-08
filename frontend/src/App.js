@@ -13,6 +13,8 @@ import NewsComponent from "./containers/pages/News-Section";
 
 import { Provider } from "react-redux";
 import store from "./store";
+import CryptoDashboard from "./containers/pages/CryptoDashboard";
+import CryptoPortfolio from "./containers/pages/CryptoPortfolio";
 
 const App = () => (
   <Provider store={store}>
@@ -63,6 +65,22 @@ const App = () => (
           element={
             <Layout>
               <StockPortfolio />
+            </Layout>
+          }
+          />
+          <Route
+          path="/cryptodashboard"
+          element={
+            <Layout>
+              <CryptoDashboard />
+            </Layout>
+          }
+          />
+          <Route
+          path="/cryptoportfolio"
+          element={
+            <Layout>
+              <CryptoPortfolio />
             </Layout>
           }
           />

@@ -1,0 +1,43 @@
+/* EditTransaction.css */
+
+.edit-popup {
+    max-width: 600px;
+    margin: auto;
+    padding: 15px;
+    background: #f3f3f3;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.edit-popup form label {
+    display: block;
+    margin-bottom: 3px; /* Reduced bottom margin */
+    font-weight: bold;
+}
+
+.edit-popup form input[type="text"],
+.edit-popup form input[type="number"],
+.edit-popup form input[type="date"],
+.edit-popup form textarea {
+    width: 100%;
+    padding: 6px; /* Reduced padding */
+    margin-bottom: 10px; /* Reduced margin */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.edit-popup form button {
+    width: auto;
+    padding: 8px; /* Reduced padding */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-right: 5px; /* Space between buttons */
+}
+
+.edit-popup form button:hover {
+    background-color: #0056b3;
+}

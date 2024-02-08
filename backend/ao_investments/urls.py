@@ -22,6 +22,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('watchlist/', include('stock_watchlist.urls')), 
+    path('crypto-transactions/', include('crypto_transactions.urls')), 
     path('news/', include('news_section.urls')), 
     path('accounts/', include('accounts.urls')), 
     path('profile/', include('user_profile.urls')),

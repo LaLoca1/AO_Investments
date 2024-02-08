@@ -1,0 +1,46 @@
+/* AddTransaction.css */
+
+.add-transaction-form {
+    max-width: 600px;
+    margin: auto;
+    padding: 15px; /* Reduced padding */
+    background: #f3f3f3;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-transaction-form h2 {
+    text-align: center;
+    margin-bottom: 10px; /* Reduced bottom margin */
+}
+
+.add-transaction-form label {
+    display: block;
+    margin-bottom: 3px; /* Reduced bottom margin */
+    font-weight: bold;
+}
+
+.add-transaction-form input[type="text"],
+.add-transaction-form input[type="number"],
+.add-transaction-form input[type="date"] {
+    width: 100%;
+    padding: 6px; /* Reduced padding */
+    margin-bottom: 10px; /* Reduced margin */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.add-transaction-form button {
+    width: 100%;
+    padding: 8px; /* Reduced padding */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.add-transaction-form button:hover {
+    background-color: #0056b3;
+}

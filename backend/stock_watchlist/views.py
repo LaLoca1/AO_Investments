@@ -7,7 +7,7 @@ from decimal import Decimal
 from datetime import datetime, timedelta
 from collections import defaultdict, OrderedDict
 
-from django.db.models import Sum, Avg, Case, When, Sum, F, IntegerField
+from django.db.models import Avg, Case, When, Sum, F, IntegerField
 from django.db.models.functions import TruncWeek
 from django.shortcuts import get_object_or_404
 from django.conf import settings

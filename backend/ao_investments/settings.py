@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "accounts", 
     "user_profile", 
     "stock_watchlist",
+    "crypto_transactions", 
     "news_section"
 ]
 
