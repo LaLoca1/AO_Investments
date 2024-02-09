@@ -23,7 +23,7 @@ ChartJS.register(
   Legend,
 );
 
-const DailyPerformanceChart = () => {
+const CryptoDailyPerformanceChart = () => {
   const [chartData, setChartData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,7 +31,7 @@ const DailyPerformanceChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("watchlist/api/user/daily-portfolio-performance/");
+        const response = await axios.get("crypto-transactions/api/user/crypto-daily-portfolio-performance/");
         const data = response.data;
         if (Array.isArray(data)) {
           setChartData({
@@ -115,4 +115,4 @@ const DailyPerformanceChart = () => {
   );
 };
 
-export default DailyPerformanceChart;
+export default CryptoDailyPerformanceChart;

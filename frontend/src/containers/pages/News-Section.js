@@ -54,7 +54,7 @@ const StockNews = () => {
                         type="text" 
                         value={ticker} 
                         onChange={(e) => setTicker(e.target.value)} 
-                        placeholder="Enter Stock Ticker" 
+                        placeholder="Enter Stock/Crypto Ticker" 
                     />
                     <button onClick={fetchNews}>Get Ticker News</button>
                 </div>

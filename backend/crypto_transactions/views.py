@@ -4,17 +4,19 @@ from .models import CryptoTransaction
 from .serializers import CryptoTransactionSerializer
 
 from decimal import Decimal
-from datetime import datetime
+from datetime import datetime, timedelta
+from collections import defaultdict,OrderedDict
 
-from django.shortcuts import get_object_or_404
 from django.db.models import Avg, Case, When, Sum, F, IntegerField
+from django.db.models.functions import TruncWeek
+from django.shortcuts import get_object_or_404
 from django.conf import settings
 
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -117,23 +119,23 @@ def get_daily_crypto_adjusted_data(coin, api_key):
 
 def get_weekly_crypto_adjusted_data(coin, api_key):
     params = {
-        "function": "TIME_SERIES_WEEKLY_ADJUSTED",
+        "function": "DIGITAL_CURRENCY_WEEKLY",
         "symbol": coin,
         "apikey": api_key
     } 
     response = requests.get("https://www.alphavantage.co/query", params=params)
     data = response.json()
-    return data.get("Weekly Adjusted Time Series", {})
+    return data.get("Time Series (Digital Currency Weekly)", {})
 
 def get_monthly_crypto_adjusted_data(coin, api_key):
     params = {
-        "function": "TIME_SERIES_MONTHLY_ADJUSTED",
+        "function": "DIGITAL_CURRENCY_MONTHLY",
         "symbol": coin,
         "apikey": api_key
     } 
     response = requests.get("https://www.alphavantage.co/query", params=params)
     data = response.json()
-    return data.get("Monthly Adjusted Time Series", {})
+    return data.get("Time Series (Digital Currency Monthly)", {})
 
 class CryptoPortfolioView(APIView):
     permission_classes = [IsAuthenticated]
@@ -208,3 +210,153 @@ class CryptoPortfolioView(APIView):
             })
         # This line sends the 'portflio_data' list as a JSON response to the client making the get request
         return Response(portfolio_data)
+    
+class CryptoPortfolioPerformanceView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request):
+        user_profile = request.user.userprofile 
+
+        # Group transactions by week 
+        weekly_data = CryptoTransaction.objects.filter(user=user_profile) \
+            .annotate(week=TruncWeek('trade_date')) \
+            .values('week') \
+            .annotate(total_value=Sum(F('price') * F('quantity'))) \
+            .order_by('week')
+        
+        portfolio_performance_data = [
+            {
+                'week': week['week'].strftime("%Y-%m-%d"),
+                'total_value': week['total_value']
+            }
+            for week in weekly_data
+        ]
+        return Response(portfolio_performance_data)
+    
+class CryptoPortfolioPerformancePeriodView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_profile = request.user.userprofile 
+
+        # Group transactions by week and calculate total value
+        weekly_data = CryptoTransaction.objects.filter(user=user_profile) \
+            .annotate(week=TruncWeek('trade_date')) \
+            .values('week') \
+            .annotate(total_value=Sum(F('price') * F('quantity'))) \
+            .order_by('week')
+
+        # Calculate holding period return
+        crypto_portfolio_performance_data = []
+        previous_week_value = None
+        for week in weekly_data:
+            current_week_value = week['total_value']
+
+            if previous_week_value is not None and previous_week_value != 0:
+                # Calculate HPR
+                hpr = ((current_week_value - previous_week_value) / previous_week_value) * 100
+                crypto_portfolio_performance_data.append({
+                    'week': week['week'].strftime("%Y-%m-%d"),
+                    'holding_period_return': hpr
+                })
+
+            previous_week_value = current_week_value
+
+        return Response(crypto_portfolio_performance_data)
+    
+class DailyCryptoPortfolioPerformanceView(APIView):
+    permission_classes = [IsAuthenticated] 
+
+    def get(self, request):
+        user_profile = request.user.userprofile 
+        api_key = settings.ALPHA_VANTAGE_API_KEY
+
+        # Define the date range for the last 30 days 
+        end_date = datetime.today().date() 
+        start_date = end_date - timedelta(days=30) 
+
+        # A queryset taht retrieves a distinct list of stock tickers from the Transaction model for user. Used to fetch historical data for each stock
+        coins = CryptoTransaction.objects.filter(user=user_profile).values_list('coin', flat=True).distinct() 
+        # Initializes an ordered dictionary, stores daily performance data. Used to calculate and organize daily portfolio values
+        daily_performance = OrderedDict() 
+
+        # Loops over list of tickers and gets daily historical data
+        for coin in coins:
+            historical_data = get_daily_crypto_adjusted_data(coin, api_key) 
+            # Process data within the last 30 days 
+            # extracts daily closing price of stock from historical data 
+            # calculates quantity of stock held by user 
+            # calculates daily portflio value for that date and stores it in daily_performance
+            for date_str, data in historical_data.items():
+                date = datetime.strptime(date_str, "%Y-%m-%d").date()
+                if start_date <= date <= end_date:
+                    daily_close_price = Decimal(data['4b. close (USD)'])
+                    crypto_quantity = get_crypto_quantity(user_profile, coin, date)
+                    daily_performance[date] = daily_performance.get(date, Decimal(0)) + crypto_quantity * daily_close_price
+
+        formatted_performance = [{
+            "day": date.strftime("%Y-%m-%d"),
+            "total_value": total_value
+        } for date, total_value in daily_performance.items()]
+
+        return Response(formatted_performance)
+
+class WeeklyCryptoPortfolioPerformanceView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_profile = request.user.userprofile
+        api_key = settings.ALPHA_VANTAGE_API_KEY  # Ideally, this should be in your settings or environment variables
+        
+        # Define the date range for the last 12 weeks 
+        end_date = datetime.today().date() 
+        start_date = end_date - timedelta(weeks=12) 
+
+        # Fetch unique tickers from the user's transactions
+        coins = CryptoTransaction.objects.filter(user=user_profile).values_list('coin', flat=True).distinct()
+        # Initialize a structure to hold weekly performance data
+        weekly_performance = defaultdict(float)
+
+        for coin in coins:
+            historical_data = get_weekly_crypto_adjusted_data(coin, api_key)
+            # Process only data within the last 12 weeks
+            for date_str, data in historical_data.items():
+                date = datetime.strptime(date_str, "%Y-%m-%d").date()
+                if start_date <= date <= end_date:
+                    weekly_close_price = Decimal(data['4b. close (USD)'])
+                    crypto_quantity = get_crypto_quantity(user_profile, coin, date)
+                    weekly_performance[date] = weekly_performance.get(date, Decimal(0)) + crypto_quantity * weekly_close_price
+
+        # Format and sort the performance data
+        formatted_performance = [{"week": date.strftime("%Y-%m-%d"), "total_value": value} for date, value in weekly_performance.items()]
+        return Response(sorted(formatted_performance, key=lambda x: x['week']))
+    
+class MonthlyCryptoPortfolioPerformanceView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_profile = request.user.userprofile
+        api_key = settings.ALPHA_VANTAGE_API_KEY  # Ideally, this should be in your settings or environment variables
+        
+        # Define the date range for the last 12 weeks 
+        end_date = datetime.today().date() 
+        start_date = end_date - timedelta(days=365) 
+
+        # Fetch unique tickers from the user's transactions
+        coins = CryptoTransaction.objects.filter(user=user_profile).values_list('coin', flat=True).distinct()
+        # Initialize a structure to hold weekly performance data
+        monthly_performance = defaultdict(float)
+
+        for coin in coins:
+            historical_data = get_monthly_crypto_adjusted_data(coin, api_key)
+            # Process only data within the last 12 weeks
+            for date_str, data in historical_data.items():
+                date = datetime.strptime(date_str, "%Y-%m-%d").date()
+                if start_date <= date <= end_date:
+                    monthly_close_price = Decimal(data['4b. close (USD)'])
+                    crypto_quantity = get_crypto_quantity(user_profile, coin, date)
+                    monthly_performance[date] += monthly_performance.get(date, Decimal(0)) + crypto_quantity * monthly_close_price
+
+        # Format and sort the performance data
+        formatted_performance = [{"month": date.strftime("%Y-%m"), "total_value": value} for date, value in monthly_performance.items()]
+        return Response(sorted(formatted_performance, key=lambda x: x['month']))

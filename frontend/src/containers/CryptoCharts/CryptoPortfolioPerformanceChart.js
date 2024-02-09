@@ -30,7 +30,7 @@ const CryptoPortfolioPerformanceChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("crypto-transactions/api/user/crypto-portfolio/");
+        const response = await axios.get("crypto-transactions/api/user/crypto-portfolio-performance/");
         const data = response.data;
         setChartData({
           labels: data.map(item => item.week),
@@ -88,7 +88,7 @@ const CryptoPortfolioPerformanceChart = () => {
 
   return (
     <div style={{ width: "500px", height: "400px", margin: "auto" }}>
-      <h2 style={{ textAlign: "center" }}>Overall Portfolio Performance</h2>
+      <h2 style={{ textAlign: "center" }}>Overall Crypto Portfolio Performance</h2>
       <Line data={chartData} options={chartOptions} />
     </div>
   );

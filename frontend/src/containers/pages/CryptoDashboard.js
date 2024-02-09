@@ -1,5 +1,9 @@
 import React from 'react'; 
 import CryptoPortfolioPerformanceChart from '../CryptoCharts/CryptoPortfolioPerformanceChart';
+import CryptoPortfolioPeriodPerformanceChart from '../CryptoCharts/CryptoPortfolioPeriodPerformanceChart';
+import CryptoDailyPerformanceChart from '../CryptoCharts/CryptoDailyPerformanceChart';
+import CryptoWeeklyPerformanceChart from '../CryptoCharts/CryptoWeeklyPerformanceChart';
+import CryptoMonthlyPerformanceChart from '../CryptoCharts/CryptoMonthlyPerformanceChart';
 import './Dashboard.css';
 
 const CryptoDashboard = () => (
@@ -10,6 +14,30 @@ const CryptoDashboard = () => (
                 <div className="col-md-6"> {/* Increase column width to make it larger */}
                     <div className="p-8 mb-3"> {/* Increase padding for larger box */}
                         <CryptoPortfolioPerformanceChart/>
+                    </div>
+                </div>
+                <div className="col-md-6"> {/* Increase column width to make it larger */}
+                    <div className="p-8 mb-3"> {/* Increase padding for larger box */}
+                        <CryptoPortfolioPeriodPerformanceChart/>
+                    </div>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-md-6"> {/* Increase column width to make it larger */}
+                    <div className="p-8 mb-3"> {/* Increase padding for larger box */}
+                        <CryptoDailyPerformanceChart/>
+                    </div>
+                </div>
+                <div className="col-md-6"> {/* Increase column width to make it larger */}
+                    <div className="p-8 mb-3"> {/* Increase padding for larger box */}
+                        <CryptoWeeklyPerformanceChart/>
+                    </div>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-md-6"> {/* Increase column width to make it larger */}
+                    <div className="p-8 mb-3"> {/* Increase padding for larger box */}
+                        <CryptoMonthlyPerformanceChart/>
                     </div>
                 </div>
             </div>

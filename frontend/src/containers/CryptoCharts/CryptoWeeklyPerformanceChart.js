@@ -24,7 +24,7 @@ ChartJS.register(
   Legend
 );
 
-const MonthlyPortfolioPerformanceChart = () => {
+const CryptoWeeklyPerformanceChart = () => {
   const [chartData, setChartData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,10 +32,10 @@ const MonthlyPortfolioPerformanceChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("watchlist/api/user/monthly-portfolio-performance/");  // Adjust API path as necessary
+        const response = await axios.get("crypto-transactions/api/user/crypto-weekly-portfolio-performance/"); // Update with your actual endpoint
         const data = response.data;
         setChartData({
-          labels: data.map(item => item.month),
+          labels: data.map(item => item.week),
           datasets: [
             {
               label: 'Portfolio Value',
@@ -61,15 +61,15 @@ const MonthlyPortfolioPerformanceChart = () => {
       x: {
         type: 'time',
         time: {
-          unit: 'month',
-          parser: 'yyyy-MM',
+          unit: 'week',
+          parser: 'yyyy-MM-dd',
           displayFormats: {
-            month: 'MMM yyyy'
+            day: 'MMM dd'
           }
         },
         title: {
           display: true,
-          text: 'Month'
+          text: 'Week'
         }
       },
       y: {
@@ -78,8 +78,7 @@ const MonthlyPortfolioPerformanceChart = () => {
           text: 'Value ($)'
         }
       }
-    }
-  };
+    },}; 
 
   if (loading) {
     return <div>Loading...</div>;
@@ -91,11 +90,10 @@ const MonthlyPortfolioPerformanceChart = () => {
 
   return (
     <div style={{ width: "500px", height: "400px", margin: "auto" }}>
-      <h2>Monthly Portfolio Performance</h2>
+      <h2 style={{ textAlign: "center" }}>Weekly Portfolio Performance</h2>
       <Line data={chartData} options={chartOptions} />
     </div>
   );
 };
 
-export default MonthlyPortfolioPerformanceChart;
-
+export default CryptoWeeklyPerformanceChart;

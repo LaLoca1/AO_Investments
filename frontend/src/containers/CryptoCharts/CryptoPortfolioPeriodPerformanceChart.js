@@ -9,7 +9,6 @@ import {
   Title,
   Tooltip,
   Legend,
-  TimeScale,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
@@ -18,13 +17,12 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
-  TimeScale,
   Title,
   Tooltip,
   Legend
 );
 
-const WeeklyPortfolioPerformanceChart = () => {
+const CryptoPortfolioPeriodPerformanceChart = () => {
   const [chartData, setChartData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,14 +30,14 @@ const WeeklyPortfolioPerformanceChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("watchlist/api/user/weekly-portfolio-performance/"); // Update with your actual endpoint
+        const response = await axios.get("crypto-transactions/api/user/crypto-portfolio-performance-period/");
         const data = response.data;
         setChartData({
           labels: data.map(item => item.week),
           datasets: [
             {
-              label: 'Portfolio Value',
-              data: data.map(item => item.total_value),
+              label: 'Holding Period Return (%)',
+              data: data.map(item => item.holding_period_return),
               fill: false,
               borderColor: 'rgb(75, 192, 192)',
               tension: 0.1
@@ -55,13 +53,13 @@ const WeeklyPortfolioPerformanceChart = () => {
 
     fetchData();
   }, []);
-
+  
   const chartOptions = {
     scales: {
       x: {
         type: 'time',
         time: {
-          unit: 'week',
+          unit: 'day',
           parser: 'yyyy-MM-dd',
           displayFormats: {
             day: 'MMM dd'
@@ -69,16 +67,16 @@ const WeeklyPortfolioPerformanceChart = () => {
         },
         title: {
           display: true,
-          text: 'Week'
+          text: 'Day'
         }
       },
       y: {
         title: {
           display: true,
-          text: 'Value ($)'
+          text: 'Percentage (%)'
         }
       }
-    },}; 
+    }};
 
   if (loading) {
     return <div>Loading...</div>;
@@ -90,10 +88,10 @@ const WeeklyPortfolioPerformanceChart = () => {
 
   return (
     <div style={{ width: "500px", height: "400px", margin: "auto" }}>
-      <h2 style={{ textAlign: "center" }}>Weekly Portfolio Performance</h2>
+      <h2 style={{ textAlign: "center" }}>Weekly Holding Period Return</h2>
       <Line data={chartData} options={chartOptions} />
     </div>
   );
 };
 
-export default WeeklyPortfolioPerformanceChart;
+export default CryptoPortfolioPeriodPerformanceChart;
