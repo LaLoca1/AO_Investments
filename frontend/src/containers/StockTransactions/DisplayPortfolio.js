@@ -51,6 +51,7 @@ const DisplayPortfolio = () => {
                   totalInvestment,
                   currentValue,
                   profitOrLoss,
+                  totalDividends,
                 }) => {
                   const percentageChange =
                     ((currentValue - totalInvestment) / totalInvestment) * 100;
@@ -75,6 +76,7 @@ const DisplayPortfolio = () => {
                       >
                         {percentageChange.toFixed(2)}%
                       </td>
+                      <td>${totalDividends.toFixed(2)}</td>
                     </tr>
                   );
                 }

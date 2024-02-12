@@ -224,8 +224,6 @@ def get_dividend_data(ticker, api_key):
 
     return dividend_info
 
-
-
 class PortfolioView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -239,7 +237,37 @@ class PortfolioView(APIView):
             return float(data["Global Quote"]["05. price"])
         else:
             return None
-            
+        
+    def calculate_total_dividends(self, user_profile, ticker, dividend_data): 
+
+        transactions = Transaction.objects.filter(user=user_profile, ticker=ticker).order_by('trade_date')
+
+        total_dividends = 0 
+        holding_periods = [] 
+
+        current_hold = None 
+        for transaction in transactions: 
+            if transaction.transactionType == 'buy':
+                current_hold = {'start': transaction.trade_date.date(), 'end': None} 
+                holding_periods.append(current_hold) 
+            elif transaction.transactionType == 'sell' and current_hold:
+                current_hold['end'] = transaction.trade_date 
+                current_hold = None 
+        
+        if current_hold and current_hold['end'] is None:
+            current_hold['end'] = datetime.today().date() 
+
+        for period in holding_periods:
+            start_date = period['start']
+            end_date = period['end'] if period['end'] is not None else datetime.today().date()
+
+        for dividend in dividend_data:
+            dividend_date = datetime.strptime(dividend['date'], "%Y-%m-%d").date()
+            if start_date <= dividend_date <= end_date:
+                total_dividends += dividend['dividend_amount']
+                        
+        return total_dividends
+    
     def get(self, request):
         user_profile = request.user.userprofile
         # Retrieves the user's portfolio data from the database using a queryset. Aggregates data related to stock transactions 
@@ -275,14 +303,15 @@ class PortfolioView(APIView):
         for item in portfolio_items:
             ticker = item['ticker'] 
             split_data = get_split_data(ticker, settings.ALPHA_VANTAGE_API_KEY) 
-
+            dividend_data = get_dividend_data(ticker, settings.ALPHA_VANTAGE_API_KEY)
+            total_dividends = self.calculate_total_dividends(user_profile, ticker, dividend_data) 
             adjusted_quantity = get_stock_quantity(user_profile, ticker, datetime.today().date(), split_data)
 
             current_price = self.get_current_stock_price(item['ticker'])
             if current_price is not None:
                 total_investment = adjusted_quantity * item['averagePrice']
                 current_value = adjusted_quantity * current_price
-                profit_or_loss = Decimal(current_value) - total_investment
+                profit_or_loss = Decimal(current_value) - total_investment + Decimal(total_dividends) 
 
                 portfolio_data.append({
                     'ticker': item['ticker'],
@@ -292,6 +321,7 @@ class PortfolioView(APIView):
                     'currentValue': current_value,
                     'profitOrLoss': profit_or_loss,
                     'currentPrice': current_price,
+                    'totalDividends': total_dividends,
                 })
         # This line sends the 'portflio_data' list as a JSON response to the client making the get request
         return Response(portfolio_data)
