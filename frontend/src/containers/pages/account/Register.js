@@ -34,7 +34,6 @@ const Register = ({ register, isAuthenticated }) => {
     <div className="main-content">
       <div className="container mt-5">
         <h1>Register for an Account</h1>
-        <p>Create an account with our Session Auth application</p>
         <form onSubmit={(e) => onSubmit(e)}>
           <CSRFToken />
           <div className="form-group">

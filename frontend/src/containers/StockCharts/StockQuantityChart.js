@@ -88,7 +88,7 @@ const StockQuantityChart = () => { // Component name changed
 
   return (
     <div>
-      <h2 style={{ textAlign: "center" }}>Stock Quantities</h2>
+      <h2 style={{ textAlign: "center" }}>Portfolio Distribution By Position</h2>
       <div style={{ width: "400px", height: "400px", margin: "auto" }}>
         {chartData ? <Pie data={chartData} options={chartOptions} /> : <div>No data available</div>}
       </div>

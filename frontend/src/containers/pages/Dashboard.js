@@ -44,11 +44,6 @@ const Dashboard = () => (
                 </div>
                 <div className="col-md-6"> {/* Increase column width to make it larger */}
                     <div className="p-8 mb-3"> {/* Increase padding for larger box */}
-                        <DailyPerformanceChart/>
-                    </div>
-                </div>
-                <div className="col-md-6"> {/* Increase column width to make it larger */}
-                    <div className="p-8 mb-3"> {/* Increase padding for larger box */}
                         <MonthlyPortfolioPerformanceChart/>
                     </div>
                 </div>

@@ -320,7 +320,7 @@ class PortfolioView(APIView):
             current_price = self.get_current_stock_price(item['ticker'])
             if current_price is not None:
                 total_investment = adjusted_quantity * item['averagePrice'] + Decimal(total_dividends)
-                current_value = adjusted_quantity * current_price 
+                current_value = adjusted_quantity * Decimal(current_price) + Decimal(total_dividends)
                 profit_or_loss = Decimal(current_value) - total_investment + Decimal(total_dividends) 
 
                 portfolio_data.append({

@@ -36,7 +36,7 @@ const DisplayPortfolio = () => {
                 <th>Total Quantity</th>
                 <th>Average Price</th>
                 <th>Total Investment</th>
-                <th>Current Value</th>
+                <th>Total Return</th>
                 <th>Net Gain/Loss</th>
                 <th>Percentage Gain/Loss</th>
                 <th>Dividends</th>

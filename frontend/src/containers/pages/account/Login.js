@@ -28,7 +28,6 @@ const Login = ({ login, isAuthenticated }) => {
     <div className="main-content">
       <div className="container mt-5">
         <h1>Sign In</h1>
-        <p>Sign into your Session Auth account</p>
         <form onSubmit={(e) => onSubmit(e)}>
           <CSRFToken />
           <div className="form-group">

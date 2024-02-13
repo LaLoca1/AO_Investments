@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { logout } from '../../actions/auth';
-import './Sidebar.css'; // Import your CSS file for sidebar styles
+import './Sidebar.css';
 
 const Sidebar = ({ isAuthenticated, logout }) => {
     const authLinks = (
@@ -23,6 +23,9 @@ const Sidebar = ({ isAuthenticated, logout }) => {
                 <NavLink className='nav-link' to='/news'>News Section</NavLink>
             </li>
             <li className='nav-item'>
+                <NavLink className='nav-link' to='/news'>Glossary</NavLink>
+            </li>
+            <li className='nav-item'>
                 <NavLink className='nav-link' to='/userprofile'>User Profile</NavLink>
             </li>
             <li className='nav-item'>
@@ -34,7 +37,7 @@ const Sidebar = ({ isAuthenticated, logout }) => {
     const guestLinks = (
         <Fragment>
             <li className='nav-item'>
-                <NavLink className='nav-link' to='/login'>Login</NavLink>
+                <NavLink className='nav-link' to='/'>Home</NavLink>
             </li>
         </Fragment>
     );
