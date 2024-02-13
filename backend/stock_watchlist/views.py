@@ -237,15 +237,22 @@ class PortfolioView(APIView):
             return float(data["Global Quote"]["05. price"])
         else:
             return None
-        
+    
+    # a method of a class (as indicated by self parameter). It takes 3 parameters
     def calculate_total_dividends(self, user_profile, ticker, dividend_data): 
 
+        # This line retrieves all transactions from 'Transaction' model for given user and stock ticker, ordered by trade date
         transactions = Transaction.objects.filter(user=user_profile, ticker=ticker).order_by('trade_date')
 
+        # Kepps track of total dividends earned and holding period is an empty list to store the periods which the 
+        # user held the stock
         total_dividends = 0 
         holding_periods = [] 
 
+        # Initializes current_hold to none. this variable will later be used to track current holding period of stock
         current_hold = None 
+        # The loop processes each transaction. For each 'buy' transaction, it starts a new holding period ('current_hold') and adds it to 
+        # 'holding_periods'. For each 'sell' transaction, it ends the current holding period by setting the 'end' date. 
         for transaction in transactions: 
             if transaction.transactionType == 'buy':
                 current_hold = {'start': transaction.trade_date.date(), 'end': None} 
@@ -253,19 +260,22 @@ class PortfolioView(APIView):
             elif transaction.transactionType == 'sell' and current_hold:
                 current_hold['end'] = transaction.trade_date 
                 current_hold = None 
-        
+        # This checks if theres an ongoing holding period (no sell transactions to end it). If so, it sets the end 
+        # date to todays date
         if current_hold and current_hold['end'] is None:
             current_hold['end'] = datetime.today().date() 
-
+        # This loop iterates over each holding period. It assigns the start and end dates of each period, 
+        # using today's date if end date is 'None'. 
         for period in holding_periods:
             start_date = period['start']
             end_date = period['end'] if period['end'] is not None else datetime.today().date()
-
+        # This nested loop iterates over each dividend record. It converts the dividend date to a 'date' object 
+        # and checks if this date falls within the holding period. If so, adds dividend amount to total_dividends, 
         for dividend in dividend_data:
             dividend_date = datetime.strptime(dividend['date'], "%Y-%m-%d").date()
             if start_date <= dividend_date <= end_date:
                 total_dividends += dividend['dividend_amount']
-                        
+
         return total_dividends
     
     def get(self, request):
@@ -309,8 +319,8 @@ class PortfolioView(APIView):
 
             current_price = self.get_current_stock_price(item['ticker'])
             if current_price is not None:
-                total_investment = adjusted_quantity * item['averagePrice']
-                current_value = adjusted_quantity * current_price
+                total_investment = adjusted_quantity * item['averagePrice'] + Decimal(total_dividends)
+                current_value = adjusted_quantity * current_price 
                 profit_or_loss = Decimal(current_value) - total_investment + Decimal(total_dividends) 
 
                 portfolio_data.append({
