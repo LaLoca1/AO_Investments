@@ -308,6 +308,10 @@ class PortfolioView(APIView):
         # It appends the computed data to the 'portfolio_data' list as a dictionary. 
         
         # Initializes empty list which will be used to store dictionaries containing financial metrics for each stock in portfolio
+        total_portfolio_investment = 0 
+        total_portfolio_value = 0 
+        total_portfolio_profit_or_loss = 0
+        
         portfolio_data = []
         # Iterates through each item (each stock) in portfolio_items queryset
         for item in portfolio_items:
@@ -316,12 +320,17 @@ class PortfolioView(APIView):
             dividend_data = get_dividend_data(ticker, settings.ALPHA_VANTAGE_API_KEY)
             total_dividends = self.calculate_total_dividends(user_profile, ticker, dividend_data) 
             adjusted_quantity = get_stock_quantity(user_profile, ticker, datetime.today().date(), split_data)
-
             current_price = self.get_current_stock_price(item['ticker'])
+
             if current_price is not None:
-                total_investment = adjusted_quantity * item['averagePrice'] + Decimal(total_dividends)
-                current_value = adjusted_quantity * Decimal(current_price) + Decimal(total_dividends)
-                profit_or_loss = Decimal(current_value) - total_investment + Decimal(total_dividends) 
+                total_investment = adjusted_quantity * item['averagePrice']
+                current_value =(adjusted_quantity * Decimal(current_price)) + (adjusted_quantity * Decimal(total_dividends))
+                profit_or_loss = Decimal(current_value) - total_investment + (adjusted_quantity * Decimal(total_dividends)) 
+                adjusted_dividends = Decimal(total_dividends) * adjusted_quantity
+                
+                total_portfolio_investment = total_portfolio_investment + total_investment 
+                total_portfolio_value = total_portfolio_value + current_value 
+                total_portfolio_profit_or_loss = total_portfolio_profit_or_loss + profit_or_loss
 
                 portfolio_data.append({
                     'ticker': item['ticker'],
@@ -331,10 +340,18 @@ class PortfolioView(APIView):
                     'currentValue': current_value,
                     'profitOrLoss': profit_or_loss,
                     'currentPrice': current_price,
-                    'totalDividends': total_dividends,
+                    'totalDividends': adjusted_dividends,
                 })
+        
+        overall_portfolio_data = {
+            'totalPortfolioInvestment': total_portfolio_investment,
+            'totalPortfolioValue': total_portfolio_value,
+            'totalPortfolioProfitOrLoss': total_portfolio_profit_or_loss
+        }
         # This line sends the 'portflio_data' list as a JSON response to the client making the get request
-        return Response(portfolio_data)
+        return Response({
+            'portfolioData': portfolio_data,
+            'overallPortfolio': overall_portfolio_data})
     
 class PortfolioPerformanceView(APIView):
     permission_classes = [IsAuthenticated]

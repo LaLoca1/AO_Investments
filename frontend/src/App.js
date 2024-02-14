@@ -9,6 +9,7 @@ import Login from "./containers/pages/account/Login";
 import UserProfile from "./containers/pages/account/UserProfile";
 import Dashboard from "./containers/pages/Dashboard";
 import StockPortfolio from "./containers/pages/StockPortfolio";
+import DisplayOverallPortfolio from "./containers/StockTransactions/DisplayOverallPortfolio";
 import NewsComponent from "./containers/pages/News-Section";
 
 import { Provider } from "react-redux";
@@ -65,6 +66,14 @@ const App = () => (
           element={
             <Layout>
               <StockPortfolio />
+            </Layout>
+          }
+          />
+        <Route
+          path="/overallportfolio"
+          element={
+            <Layout>
+              <DisplayOverallPortfolio />
             </Layout>
           }
           />

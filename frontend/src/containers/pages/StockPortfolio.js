@@ -13,7 +13,6 @@ const StockPortfolio = () => {
   const [filter, setFilter] = useState("");
   const [loading, setLoading] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
-  const [showAddForm, setShowAddForm] = useState(false);
   const [refreshCounter, setRefreshCounter] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);

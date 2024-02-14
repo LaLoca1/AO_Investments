@@ -14,7 +14,7 @@ const DisplayPortfolio = () => {
     try {
       setLoading(true);
       const response = await axios.get("/watchlist/api/user/portfolio/");
-      setPortfolio(response.data);
+      setPortfolio(response.data.portfolioData); 
     } catch (error) {
       console.error("Error fetching portfolio data:", error);
     } finally {
