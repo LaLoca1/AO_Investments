@@ -23,6 +23,9 @@ const Sidebar = ({ isAuthenticated, logout }) => {
                 <NavLink className='nav-link' to='/cryptoportfolio'>Crypto Portfolio</NavLink>
             </li>
             <li className='nav-item'>
+                <NavLink className='nav-link' to='/overallcryptoportfolio'>Overall Crypto Portfolio</NavLink>
+            </li>
+            <li className='nav-item'>
                 <NavLink className='nav-link' to='/news'>News Section</NavLink>
             </li>
             <li className='nav-item'>

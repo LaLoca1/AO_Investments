@@ -14,7 +14,7 @@ const DisplayCryptoPortfolio = () => {
     try {
       setLoading(true);
       const response = await axios.get("/crypto-transactions/api/user/crypto-portfolio/");
-      setPortfolio(response.data);
+      setPortfolio(response.data.CryptoPortfolioData);
     } catch (error) {
       console.error("Error fetching portfolio data:", error);
     } finally {

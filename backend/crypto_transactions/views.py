@@ -177,7 +177,7 @@ class CryptoPortfolioView(APIView):
                 
     def get(self, request):
         user_profile = request.user.userprofile
-        portfolio_items = (
+        crypto_portfolio_items = (
             CryptoTransaction.objects.filter(user=user_profile)
             .values('coin')
             .annotate(
@@ -200,9 +200,13 @@ class CryptoPortfolioView(APIView):
         # It appends the computed data to the 'portfolio_data' list as a dictionary. 
         
         # Initializes empty list which will be used to store dictionaries containing financial metrics for each stock in portfolio
+        total_crypto_portfolio_investment = 0 
+        total_crypto_portfolio_value = 0 
+        total_crypto_portfolio_profit_or_loss = 0 
+        
         portfolio_data = []
         # Iterates through each item (each stock) in portfolio_items queryset
-        for item in portfolio_items:
+        for item in crypto_portfolio_items:
             coin = item['coin'] 
             crypto_quantity = item['totalQuantity']  # Corrected this line
 
@@ -211,6 +215,10 @@ class CryptoPortfolioView(APIView):
                 total_investment = crypto_quantity * item['averagePrice']
                 current_value = crypto_quantity * current_price
                 profit_or_loss = Decimal(current_value) - Decimal(total_investment)
+
+                total_crypto_portfolio_investment = total_crypto_portfolio_investment + total_investment
+                total_crypto_portfolio_value = total_crypto_portfolio_value + current_value
+                total_crypto_portfolio_profit_or_loss = total_crypto_portfolio_profit_or_loss + profit_or_loss
 
             portfolio_data.append({
                 'coin': coin,  # Using the variable 'coin' here for clarity
@@ -221,8 +229,17 @@ class CryptoPortfolioView(APIView):
                 'profitOrLoss': profit_or_loss,
                 'currentPrice': current_price,
             })
+        
+        overall_portfolio_data = {
+            'totalCryptoPortfolioInvestment': total_crypto_portfolio_investment, 
+            'totalCryptoPortfolioValue': total_crypto_portfolio_value,
+            'totalCryptoPortfolioProfitOrLoss': total_crypto_portfolio_profit_or_loss
+        }
+
         # This line sends the 'portflio_data' list as a JSON response to the client making the get request
-        return Response(portfolio_data)
+        return Response({
+            'CryptoPortfolioData': portfolio_data,
+            'overallCryptoPortfolio': overall_portfolio_data})
     
 class CryptoPortfolioPerformanceView(APIView):
     permission_classes = [IsAuthenticated]

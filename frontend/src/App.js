@@ -10,6 +10,7 @@ import UserProfile from "./containers/pages/account/UserProfile";
 import Dashboard from "./containers/pages/Dashboard";
 import StockPortfolio from "./containers/pages/StockPortfolio";
 import DisplayOverallPortfolio from "./containers/StockTransactions/DisplayOverallPortfolio";
+import DisplayOverallCryptoPortfolio from "./containers/CryptoTransactions/DisplayOverallCryptoPortfolio";
 import NewsComponent from "./containers/pages/News-Section";
 
 import { Provider } from "react-redux";
@@ -90,6 +91,14 @@ const App = () => (
           element={
             <Layout>
               <CryptoPortfolio />
+            </Layout>
+          }
+          />
+          <Route
+          path="/overallcryptoportfolio"
+          element={
+            <Layout>
+              <DisplayOverallCryptoPortfolio/>
             </Layout>
           }
           />
