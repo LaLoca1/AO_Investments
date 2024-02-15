@@ -137,6 +137,19 @@ def get_monthly_crypto_adjusted_data(coin, api_key):
     data = response.json()
     return data.get("Time Series (Digital Currency Monthly)", {})
 
+class StockQuantityView(APIView): 
+    permission_classes = [IsAuthenticated] 
+
+    def get(self, request):
+        user_profile = request.user.userprofile 
+
+        crypto_data = CryptoTransaction.objects.filter(user=user_profile) \
+            .values('coin') \
+            .annotate(total_quantity=Sum('quantity')) \
+            .order_by('-total_quantity')
+        
+        return Response(list(crypto_data)) 
+
 class CryptoPortfolioView(APIView):
     permission_classes = [IsAuthenticated]
 

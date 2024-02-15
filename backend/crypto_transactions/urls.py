@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CreateTransactionView, DeleteTransactionView, EditTransactionView, CryptoPortfolioView, CryptoTransactionList, CryptoPortfolioPerformanceView, CryptoPortfolioPerformancePeriodView, DailyCryptoPortfolioPerformanceView, WeeklyCryptoPortfolioPerformanceView, MonthlyCryptoPortfolioPerformanceView 
+from .views import CreateTransactionView, DeleteTransactionView, EditTransactionView, CryptoPortfolioView, CryptoTransactionList, CryptoPortfolioPerformanceView, CryptoPortfolioPerformancePeriodView, DailyCryptoPortfolioPerformanceView, WeeklyCryptoPortfolioPerformanceView, MonthlyCryptoPortfolioPerformanceView, CryptoQuantityView 
 
 urlpatterns = [
     path('api/user/crypto-transaction-items/', CryptoTransactionList.as_view(), name='transaction-list'),
@@ -12,4 +12,5 @@ urlpatterns = [
     path('api/user/crypto-daily-portfolio-performance/', DailyCryptoPortfolioPerformanceView.as_view(), name='user-crypto-daily-portfolio-performance'),
     path('api/user/crypto-weekly-portfolio-performance/', WeeklyCryptoPortfolioPerformanceView.as_view(), name='user-crypto-weekly-portfolio-performance'),
     path('api/user/crypto-monthly-portfolio-performance/', MonthlyCryptoPortfolioPerformanceView.as_view(), name='user-crypto-monthly-portfolio-performance'),
+    path('api/user/crypto-quantity-breakdown/', CryptoQuantityView.as_view(), name='crypto-quantity-breakdown'), 
 ]

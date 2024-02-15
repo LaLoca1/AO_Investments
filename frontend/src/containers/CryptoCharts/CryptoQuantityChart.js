@@ -24,10 +24,10 @@ const generateColors = (count) => {
 const setupChartData = (data) => {
   const backgroundColors = generateColors(data.length);
   return {
-    labels: data.map((item) => item.ticker), // Changed to ticker
+    labels: data.map((item) => item.coin), // Changed to ticker
     datasets: [
       {
-        label: "Stock Quantities",
+        label: "Crypto Quantities",
         data: data.map((item) => item.total_quantity), // Changed to total_quantity
         backgroundColor: backgroundColors,
         borderColor: backgroundColors.map((color) => color.replace("0.6", "1")),
@@ -37,7 +37,7 @@ const setupChartData = (data) => {
   };
 };
 
-const StockQuantityChart = () => { // Component name changed
+const CryptoQuantityChart = () => { // Component name changed
   const [chartData, setChartData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,7 +45,7 @@ const StockQuantityChart = () => { // Component name changed
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/watchlist/api/user/stock-quantity-breakdown/"); // Endpoint changed
+        const response = await axios.get("/crypto-transactions/api/user/crypto-quantity-breakdown/"); // Endpoint changed
         const data = response.data;
         if (data && Array.isArray(data)) {
           setChartData(setupChartData(data));
@@ -66,7 +66,7 @@ const StockQuantityChart = () => { // Component name changed
     plugins: {
       title: {
         display: true,
-        text: "Stock Quantities",
+        text: "Crypto Quantities",
         font: {
           size: 18,
         },
@@ -88,7 +88,7 @@ const StockQuantityChart = () => { // Component name changed
 
   return (
     <div>
-      <h2 style={{ textAlign: "center" }}>Stock Quantities</h2>
+      <h2 style={{ textAlign: "center" }}>Crypto Quantities</h2>
       <div style={{ width: "400px", height: "400px", margin: "auto" }}>
         {chartData ? <Pie data={chartData} options={chartOptions} /> : <div>No data available</div>}
       </div>
@@ -96,4 +96,4 @@ const StockQuantityChart = () => { // Component name changed
   );
 };
 
-export default StockQuantityChart;
+export default CryptoQuantityChart;
