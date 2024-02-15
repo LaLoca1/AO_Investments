@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./DisplayOverallPortfolio.css";
+import "./DisplayPortfolio.css";
 
 const DisplayOverallPortfolio = () => {
   const [overallPortfolio, setOverallPortfolio] = useState(null);
@@ -25,7 +25,7 @@ const DisplayOverallPortfolio = () => {
   };
 
   return (
-    <div className="table-container">
+    <div className="overall-table-container">
       {loading ? (
         <p>Loading...</p>
       ) : overallPortfolio ? (
