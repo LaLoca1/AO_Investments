@@ -32,7 +32,7 @@ const DisplayOverallCryptoPortfolio = () => {
         <p>Loading...</p>
       ) : overallCryptoPortfolio ? (
         <div className="overall-performance-container">
-          <h3>Overall Portfolio Performance</h3>
+          <h3>Overall Crypto Portfolio Performance</h3>
           <table className="table table-striped table-hover">
             <tbody>
               <tr>
@@ -59,7 +59,7 @@ const DisplayOverallCryptoPortfolio = () => {
           </table>
         </div>
       ) : (
-        <p>No data available</p>
+        <p>Loading...</p>
       )}
     </div>
   );

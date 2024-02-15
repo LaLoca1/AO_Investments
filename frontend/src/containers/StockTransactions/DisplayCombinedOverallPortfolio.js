@@ -61,7 +61,7 @@ const DisplayCombinedOverallPortfolio = () => {
         <p>Loading...</p>
       ) : overallPortfolio && overallCryptoPortfolio ? (
         <div className="overall-performance-container">
-          <h3>Overall Portfolio Performance</h3>
+          <h3>Combined Overall Portfolio Performance</h3>
           <table className="table table-striped table-hover">
             <tbody>
               <tr>
@@ -106,7 +106,7 @@ const DisplayCombinedOverallPortfolio = () => {
           </table>
         </div>
       ) : (
-        <p>No data available</p>
+        <p>Loading...</p>
       )}
     </div>
   );

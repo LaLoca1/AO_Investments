@@ -30,7 +30,7 @@ const DisplayOverallPortfolio = () => {
         <p>Loading...</p>
       ) : overallPortfolio ? (
         <div className="overall-performance-container">
-          <h3>Overall Portfolio Performance</h3>
+          <h3>Overall Stock Portfolio Performance</h3>
           <table className="table table-striped table-hover">
             <tbody>
               <tr>

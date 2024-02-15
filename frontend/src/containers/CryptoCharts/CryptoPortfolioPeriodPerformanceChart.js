@@ -88,7 +88,7 @@ const CryptoPortfolioPeriodPerformanceChart = () => {
 
   return (
     <div style={{ width: "500px", height: "400px", margin: "auto" }}>
-      <h2 style={{ textAlign: "center" }}>Weekly Holding Period Return</h2>
+      <h2 style={{ textAlign: "center" }}>Overall Holding Period Return</h2>
       <Line data={chartData} options={chartOptions} />
     </div>
   );

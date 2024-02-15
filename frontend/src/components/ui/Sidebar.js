@@ -14,22 +14,16 @@ const Sidebar = ({ isAuthenticated, logout }) => {
                 <NavLink className='nav-link' to='/stockportfolio'>Stocks Portfolio</NavLink>
             </li>
             <li className='nav-item'>
-                <NavLink className='nav-link' to='/overallportfolio'>Overall Portfolio</NavLink>
-            </li>
-            <li className='nav-item'>
                 <NavLink className='nav-link' to='/cryptodashboard'>Crypto Dashboard</NavLink>
             </li>
             <li className='nav-item'>
                 <NavLink className='nav-link' to='/cryptoportfolio'>Crypto Portfolio</NavLink>
             </li>
             <li className='nav-item'>
-                <NavLink className='nav-link' to='/overallcryptoportfolio'>Overall Crypto Portfolio</NavLink>
+                <NavLink className='nav-link' to='/combinedportfolio'>Overall Portfolio</NavLink>
             </li>
             <li className='nav-item'>
                 <NavLink className='nav-link' to='/news'>News Section</NavLink>
-            </li>
-            <li className='nav-item'>
-                <NavLink className='nav-link' to='/combinedportfolio'>Glossary</NavLink>
             </li>
             <li className='nav-item'>
                 <NavLink className='nav-link' to='/userprofile'>User Profile</NavLink>

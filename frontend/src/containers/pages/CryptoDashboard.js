@@ -10,6 +10,13 @@ const CryptoDashboard = () => (
     <div className='container large-gap'>
         <div className='main-content'>
             <h2 className="dashboard-title">Crypto Portfolio Breakdown</h2>
+            <div className="row justify-content-center">
+                <div className="col-md-6"> {/* Increase column width to make it larger */}
+                    <div className="p-8 mb-3"> {/* Increase padding for larger box */}
+                        <CryptoQuantityChart/>
+                    </div>
+                </div>
+            </div>
             <div className="row">
                 <div className="col-md-6"> {/* Increase column width to make it larger */}
                     <div className="p-8 mb-3"> {/* Increase padding for larger box */}
@@ -31,13 +38,6 @@ const CryptoDashboard = () => (
                 <div className="col-md-6"> {/* Increase column width to make it larger */}
                     <div className="p-8 mb-3"> {/* Increase padding for larger box */}
                         <CryptoMonthlyPerformanceChart/>
-                    </div>
-                </div>
-            </div>
-            <div className="row">
-                <div className="col-md-6"> {/* Increase column width to make it larger */}
-                    <div className="p-8 mb-3"> {/* Increase padding for larger box */}
-                        <CryptoQuantityChart/>
                     </div>
                 </div>
             </div>
