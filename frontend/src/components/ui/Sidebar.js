@@ -29,7 +29,7 @@ const Sidebar = ({ isAuthenticated, logout }) => {
                 <NavLink className='nav-link' to='/news'>News Section</NavLink>
             </li>
             <li className='nav-item'>
-                <NavLink className='nav-link' to='/news'>Glossary</NavLink>
+                <NavLink className='nav-link' to='/combinedportfolio'>Glossary</NavLink>
             </li>
             <li className='nav-item'>
                 <NavLink className='nav-link' to='/userprofile'>User Profile</NavLink>
