@@ -20,11 +20,14 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale);
 
 // Used to generate an array of RGBA color strings. Used for styling sectors in pie chart
 const generateColors = (count) => {
-  // Placeholder function for color generation
   const colors = [];
+  const hueStep = 360 / count; // Divide the color wheel into 'count' parts
+
   for (let i = 0; i < count; i++) {
-    colors.push(`rgba(${255 - i * 20}, ${99 + i * 20}, ${132 + i * 10}, 0.6)`);
+    const hue = i * hueStep; // Calculate the hue value
+    colors.push(`hsl(${hue}, 70%, 60%)`); // You can adjust saturation and lightness as needed
   }
+
   return colors;
 };
 
