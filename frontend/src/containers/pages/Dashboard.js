@@ -11,7 +11,7 @@ import './Dashboard.css';
 const Dashboard = () => (
     <div className='container large-gap'>
         <div className='main-content'>
-            <h2 className="dashboard-title">Stock Portfolio Breakdown</h2>
+            <h1 className="dashboard-title">Stock Portfolio Breakdown</h1>
             <div className="row row-separator">
                 <div className="col-md-6"> {/* Increase column width to make it larger */}
                     <div className="p-8 mb-3"> {/* Increase padding for larger box */}

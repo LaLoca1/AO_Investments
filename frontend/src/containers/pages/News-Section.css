@@ -5,6 +5,23 @@
     justify-content: center;
     margin-left: 50px;
 }
+.note-and-search {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+}
+
+.side-note {
+    text-align: center;
+    display: flex;
+    justify-content: center; 
+}
+
+.search-fields-container {
+    display: flex;
+    justify-content: center; 
+    gap: 20px; 
+}
 
 .news-item {
     border: 1px solid #ddd;

@@ -48,24 +48,29 @@ const StockNews = () => {
 
     return (
         <div className="search-container">
-            <div className="search-bar">
-                <div className="search-field">
-                    <input 
-                        type="text" 
-                        value={ticker} 
-                        onChange={(e) => setTicker(e.target.value)} 
-                        placeholder="Enter Stock/Crypto Ticker" 
-                    />
-                    <button onClick={fetchNews}>Get Ticker News</button>
+            <div className="note-and-search">
+                <div className="side-note">
+                    <p>Enter a stock or crypto ticker (for crypto, type 'CRYPTO:' first) symbol to fetch relevant news. You can also search for news on a specific topic.</p>
                 </div>
-                <div className="search-field">
-                    <input 
-                        type="text" 
-                        value={topic} 
-                        onChange={(e) => setTopic(e.target.value)} 
-                        placeholder="Enter Topic" 
-                    />
-                    <button onClick={fetchTopics}>Get Topic News</button>
+                <div className="search-fields-container">
+                    <div className="search-field">
+                        <input 
+                            type="text" 
+                            value={ticker} 
+                            onChange={(e) => setTicker(e.target.value)} 
+                            placeholder="Enter Ticker" 
+                        />
+                        <button onClick={fetchNews}>Get Ticker News</button>
+                    </div>
+                    <div className="search-field">
+                        <input 
+                            type="text" 
+                            value={topic} 
+                            onChange={(e) => setTopic(e.target.value)} 
+                            placeholder="Enter Topic" 
+                        />
+                        <button onClick={fetchTopics}>Get Topic News</button>
+                    </div>
                 </div>
             </div>
             <div className="container large-gap">

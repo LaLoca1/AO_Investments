@@ -91,7 +91,8 @@ const CryptoMonthlyPortfolioPerformanceChart = () => {
 
   return (
     <div style={{ width: "500px", height: "400px", margin: "auto" }}>
-      <h2 style={{ textAlign: "center" }}>Monthly Portfolio Performance</h2>
+      <h2 style={{ textAlign: "center" }}>Yearly Portfolio Performance</h2>
+      <p style={{ textAlign: "center" }}> This chart illustrates the performance of your entire crypto investment portfolio over the year.</p>
       <Line data={chartData} options={chartOptions} />
     </div>
   );

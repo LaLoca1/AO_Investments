@@ -89,6 +89,7 @@ const PortfolioPeriodPerformanceChart = () => {
   return (
     <div style={{ width: "500px", height: "400px", margin: "auto" }}>
       <h2 style={{ textAlign: "center" }}> Overall Holding Period Return</h2>
+      <p style={{ textAlign: "center" }}> This reflects the total percentage gain / loss over the entire period your investments have been active.</p>
       <Line data={chartData} options={chartOptions} />
     </div>
   );
