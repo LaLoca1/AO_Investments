@@ -3,7 +3,7 @@ AO Investments is a web application that allows users to create a stock and cryp
 * Front-End: React
 * Back-End: Django (Python)
 * Database: Postgresql
-<img src="screenshots/StockPortfolio.PNG" width="500">
+<img src="screenshots/StockPortfolio.png" width="500">
 
 # Table of Contents
 - [Introduction](https://github.com/LaLoca1/AO_Investments#Introduction)
@@ -28,5 +28,5 @@ These are shown in the screenshots folder in the repo.
 After Registration and logging in, A user can create a stock or crypto portfolio. The user can then start adding securities to the portfolio and enter the economics of the trade. The site will then display the various features based on the information entered by the user. If the security does not yet have a prices stored in the database, an api call will be made to Alpha Vantage and the last 100 End of Day (EOD) prices will be stored to the database. EOD prices are updated before midnight on every weekday.
 
 # Screenshots
-<img src="screenshots/StockBreakdown.PNG" width="500">
-<img src="screenshots/StockChart.PNG" width="500">
+<img src="screenshots/StockBreakdown.png" width="500">
+<img src="screenshots/StockChart.png" width="500">
