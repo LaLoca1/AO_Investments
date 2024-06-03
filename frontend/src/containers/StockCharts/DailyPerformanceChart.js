@@ -110,6 +110,7 @@ const DailyPerformanceChart = () => {
   return (
     <div style={{ width: "500px", height: "400px", margin: "auto" }}>
       <h2 style={{ textAlign: "center" }}>Daily Portfolio Performance</h2>
+      <p style={{ textAlign: "center" }}> This chart illustrates the performance of your entire investment portfolio on a weekly basis.</p>
       <Line data={chartData} options={chartOptions} />
     </div>
   );

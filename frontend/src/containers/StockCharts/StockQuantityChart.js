@@ -92,6 +92,9 @@ const StockQuantityChart = () => { // Component name changed
   return (
     <div>
       <h2 style={{ textAlign: "center" }}>Portfolio Distribution By Position</h2>
+      <p style={{ textAlign: "center" }}>
+      This pie chart displays the quantities of different stocks in your portfolio. Each slice represents the proportion of a particular stock, measured by the quantity you own.
+      </p>
       <div style={{ width: "400px", height: "400px", margin: "auto" }}>
         {chartData ? <Pie data={chartData} options={chartOptions} /> : <div>No data available</div>}
       </div>

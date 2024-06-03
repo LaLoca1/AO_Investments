@@ -7,7 +7,7 @@ from decimal import Decimal
 from datetime import datetime, timedelta
 from collections import defaultdict, OrderedDict
 
-from django.db.models import Avg, Case, When, Sum, F, IntegerField
+from django.db.models import Avg, Case, When, Sum, F, IntegerField, Min
 from django.db.models.functions import TruncWeek
 from django.shortcuts import get_object_or_404
 from django.conf import settings
@@ -486,7 +486,14 @@ class MonthlyPortfolioPerformanceView(APIView):
         
         # Define the date range for the last 12 weeks 
         end_date = datetime.today().date() 
-        start_date = end_date - timedelta(days=365) 
+
+        earliest_transaction = Transaction.objects.filter(
+        user=user_profile
+        ).aggregate(earliest_date=Min('trade_date'))
+
+        start_date = earliest_transaction.get('earliest_date')
+
+        start_date = start_date.date()
 
         # Fetch unique tickers from the user's transactions
         tickers = Transaction.objects.filter(user=user_profile).values_list('ticker', flat=True).distinct()

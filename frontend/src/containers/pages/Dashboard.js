@@ -25,26 +25,21 @@ const Dashboard = () => (
                 </div>
             </div>
             <div className="row">
-                <div className="col-md-6"> {/* Increase column width to make it larger */}
+                <div className="col-md-12"> {/* Increase column width to make it larger */}
                     <div className="p-8 mb-3"> {/* Increase padding for larger box */}
-                        <PortfolioPerformanceChart/>
-                    </div>
-                </div>
-                <div className="col-md-6"> {/* Increase column width to make it larger */}
-                    <div className="p-8 mb-3"> {/* Increase padding for larger box */}
-                        <PortfolioPeriodPerformanceChart/>
+                        <MonthlyPortfolioPerformanceChart/>
                     </div>
                 </div>
             </div>
             <div className="row">
                 <div className="col-md-6"> {/* Increase column width to make it larger */}
                     <div className="p-8 mb-3"> {/* Increase padding for larger box */}
-                        <WeeklyPortfolioPerformanceChart/>
+                        <DailyPerformanceChart/>
                     </div>
                 </div>
                 <div className="col-md-6"> {/* Increase column width to make it larger */}
                     <div className="p-8 mb-3"> {/* Increase padding for larger box */}
-                        <MonthlyPortfolioPerformanceChart/>
+                        <WeeklyPortfolioPerformanceChart/>
                     </div>
                 </div>
             </div>

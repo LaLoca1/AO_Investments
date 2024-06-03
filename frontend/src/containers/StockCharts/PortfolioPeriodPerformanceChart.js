@@ -9,6 +9,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  TimeScale,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
@@ -17,12 +18,13 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
+  TimeScale,
   Title,
   Tooltip,
   Legend
 );
 
-const PortfolioPeriodPerformanceChart = () => {
+const MonthlyHoldingPeriodReturnChart = () => {
   const [chartData, setChartData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,10 +32,10 @@ const PortfolioPeriodPerformanceChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("watchlist/api/user/portfolio-performance-period/");
+        const response = await axios.get("watchlist/api/user/monthly-portfolio-performance/"); 
         const data = response.data;
         setChartData({
-          labels: data.map(item => item.week),
+          labels: data.map(item => item.month),
           datasets: [
             {
               label: 'Holding Period Return (%)',
@@ -53,30 +55,31 @@ const PortfolioPeriodPerformanceChart = () => {
 
     fetchData();
   }, []);
-  
+
   const chartOptions = {
     scales: {
       x: {
         type: 'time',
         time: {
-          unit: 'day',
-          parser: 'yyyy-MM-dd',
+          unit: 'month',
+          parser: 'yyyy-MM',
           displayFormats: {
-            day: 'MMM dd'
+            month: 'MMM yyyy'
           }
         },
         title: {
           display: true,
-          text: 'Day'
+          text: 'Month'
         }
       },
       y: {
         title: {
           display: true,
-          text: 'Percentage (%)'
+          text: 'Holding Period Return (%)'
         }
       }
-    }};
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -88,11 +91,13 @@ const PortfolioPeriodPerformanceChart = () => {
 
   return (
     <div style={{ width: "500px", height: "400px", margin: "auto" }}>
-      <h2 style={{ textAlign: "center" }}> Overall Holding Period Return</h2>
-      <p style={{ textAlign: "center" }}> This reflects the total percentage gain / loss over the entire period your investments have been active.</p>
+      <h2 style={{ textAlign: "center" }}>Monthly Holding Period Return</h2>
+      <p style={{ textAlign: "center" }}>
+        This chart displays the monthly holding period return as a percentage, showing how your portfolio's value has changed from month to month.
+      </p>
       <Line data={chartData} options={chartOptions} />
     </div>
   );
 };
 
-export default PortfolioPeriodPerformanceChart;
+export default MonthlyHoldingPeriodReturnChart;

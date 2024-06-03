@@ -103,6 +103,9 @@ const SectorBreakdownChart = () => {
   return (
     <div>
       <h2 style={{ textAlign: "center" }}>Sector Breakdown</h2>{" "}
+      <p style={{ textAlign: "center" }}>
+       This pie chart provides a visual representation of your investment portfolio's sector allocation. Each slice represents the proportion of your total investment in a specific sector.
+      </p>
       <div style={{ width: "400px", height: "400px", margin: "auto" }}>
         {chartData ? <Pie data={chartData} options={chartOptions} /> : <div>No data available</div>}
       </div>
